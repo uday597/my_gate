@@ -151,7 +151,11 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             boxShadow: [
-              BoxShadow(color: Colors.black12, blurRadius: 20, spreadRadius: 5),
+              BoxShadow(
+                color: const Color.fromARGB(255, 235, 235, 235),
+                blurRadius: 2,
+                spreadRadius: 1,
+              ),
             ],
           ),
           child: CircleAvatar(

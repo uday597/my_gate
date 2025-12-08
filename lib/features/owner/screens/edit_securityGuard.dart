@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_clone/features/owner/modal/security_guard.dart';
 import 'package:my_gate_clone/features/owner/provider/security_guard.dart';
+import 'package:my_gate_clone/utilis/appbar.dart';
 import 'package:provider/provider.dart';
 
 class EditSecurityGuardScreen extends StatefulWidget {
@@ -84,7 +85,8 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Edit Security Guard")),
+      appBar: reuseAppBar(title: 'Edit Information'),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
         child: Form(
@@ -150,6 +152,10 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
                 height: 50,
                 width: double.infinity,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.lightBlue,
+                    foregroundColor: Colors.white,
+                  ),
                   onPressed: isLoading ? null : updateGuard,
                   child: isLoading
                       ? const CircularProgressIndicator(color: Colors.white)

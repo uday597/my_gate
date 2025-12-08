@@ -8,11 +8,14 @@ class MembersProvider extends ChangeNotifier {
   List<MembersModal> members = [];
   final supabase = Supabase.instance.client;
   bool isLoading = false;
-  Future<void> fatchMembersList() async {
+  Future<void> fatchMembersList(int societyId) async {
     try {
       isLoading = true;
       notifyListeners();
-      final response = await supabase.from('members').select();
+      final response = await supabase
+          .from('members')
+          .select()
+          .eq('society_id', societyId);
       members = (response as List)
           .map((data) => MembersModal.fromMap(data))
           .toList();
@@ -54,7 +57,7 @@ class MembersProvider extends ChangeNotifier {
     try {
       await supabase.from('members').insert(member.toMap());
 
-      await fatchMembersList(); // Refresh list
+      await fatchMembersList(member.societyId); // Refresh list
     } catch (e) {
       rethrow;
     }
@@ -63,7 +66,7 @@ class MembersProvider extends ChangeNotifier {
   Future<void> updateMember(MembersModal id, MembersModal member) async {
     try {
       await supabase.from('members').update(member.toMap()).eq('id', member.id);
-      await fatchMembersList();
+      await fatchMembersList(member.societyId);
     } catch (e) {
       rethrow;
     }
@@ -72,6 +75,7 @@ class MembersProvider extends ChangeNotifier {
   Future<void> deleteSociety(int id) async {
     try {
       await supabase.from('members').delete().eq('id', id);
+
       members.removeWhere((s) => s.id == id);
       notifyListeners();
     } catch (e) {

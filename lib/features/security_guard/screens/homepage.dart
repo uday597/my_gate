@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:my_gate_clone/features/owner/modal/security_guard.dart';
+import 'package:my_gate_clone/features/security_guard/screens/contact_us.dart';
 import 'package:my_gate_clone/features/security_guard/screens/scanner.dart';
 import 'package:my_gate_clone/features/security_guard/screens/visitors.dart';
 import 'package:my_gate_clone/utilis/appbar.dart';
@@ -110,9 +112,17 @@ class GuardHomepage extends StatelessWidget {
                   },
                 ),
                 buildMenuButton(
-                  icon: Icons.notifications,
-                  title: "Alerts",
-                  onTap: () {},
+                  icon: Icons.phone,
+                  title: "Contact us",
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ContactUs(societyId: guard.societyId),
+                      ),
+                    );
+                  },
                 ),
                 buildMenuButton(
                   icon: Icons.logout,
@@ -177,7 +187,14 @@ class GuardHomepage extends StatelessWidget {
               infoTile("Phone Number", guard.phone),
               infoTile("Address", guard.address),
               infoTile("Society ID", guard.societyId.toString()),
-              infoTile("Joined On", guard.createdAt ?? "No date"),
+              infoTile(
+                "Joined On",
+                guard.createdAt != null
+                    ? DateFormat(
+                        'dd MMM yyyy, hh:mm a',
+                      ).format(DateTime.parse(guard.createdAt!))
+                    : "No date",
+              ),
 
               const SizedBox(height: 15),
             ],

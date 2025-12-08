@@ -22,7 +22,6 @@ class _GuardQRScannerScreenState extends State<GuardQRScannerScreen> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RequestProvider>(context, listen: false);
 

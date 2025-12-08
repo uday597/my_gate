@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- for gurad scanner open -->
     <uses-permission android:name="android.permission.CAMERA" />
-    
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
+
     <application
         android:label="my_gate_clone"
         android:name="${applicationName}"
@@ -26,6 +31,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <meta-data
@@ -33,13 +39,5 @@
             android:value="2" />
 
     </application>
-
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT" />
-            <action android:name="android.media.action.IMAGE_CAPTURE"/>
-            <data android:mimeType="text/plain" />
-        </intent>
-    </queries>
 
 </manifest>

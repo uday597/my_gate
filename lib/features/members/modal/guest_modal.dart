@@ -7,6 +7,8 @@ class GuestRequest {
   final String? guestAddress;
   final String? guestImage;
   final String? qrCode;
+  final String? memberName;
+  final String? request_type;
 
   final DateTime createdAt;
   final DateTime? guardViewedAt;
@@ -15,6 +17,7 @@ class GuestRequest {
 
   GuestRequest({
     required this.id,
+    this.memberName,
     required this.societyId,
     required this.memberId,
     required this.guestName,
@@ -26,6 +29,7 @@ class GuestRequest {
     this.guardViewedAt,
     this.guardActionAt,
     required this.status,
+    required this.request_type,
   });
 
   factory GuestRequest.fromMap(Map<String, dynamic> map) {
@@ -33,6 +37,8 @@ class GuestRequest {
       id: map['id'],
       societyId: map['society_id'],
       memberId: map['member_id'],
+      request_type: map['request_type'],
+      memberName: map['members']?['member_name'] ?? 'Unknown',
       guestName: map['guest_name'],
       guestPhone: map['guest_phone'],
       guestAddress: map['guest_address'],
@@ -56,13 +62,19 @@ class GuestRequest {
       'member_id': memberId,
       'guest_name': guestName,
       'guest_phone': guestPhone,
+      'member_name': memberName,
       'guest_address': guestAddress,
       'guest_image': guestImage,
       'status': status,
       'qr_code': qrCode,
+      'request_type': request_type,
       'created_at': createdAt.toIso8601String(),
       'guard_viewed_at': guardViewedAt?.toIso8601String(),
       'guard_action_at': guardActionAt?.toIso8601String(),
     };
   }
+}
+
+extension GuestRequestExtension on GuestRequest {
+  String get type => request_type ?? 'guest';
 }

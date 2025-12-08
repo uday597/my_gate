@@ -7,7 +7,7 @@ class SocietyProvider with ChangeNotifier {
 
   List<SocietyModal> societies = [];
   bool isLoading = false;
-
+  SocietyModal? crruntSociety;
   // Fetch all societies
   Future<void> fetchSocieties() async {
     try {
@@ -29,7 +29,30 @@ class SocietyProvider with ChangeNotifier {
     }
   }
 
-  // Create Society
+  Future<void> fetchCurrentSociety(int societyId) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      final response = await supabase
+          .from('societies')
+          .select()
+          .eq('id', societyId)
+          .maybeSingle();
+
+      if (response != null) {
+        crruntSociety = SocietyModal.fromMap(response);
+      }
+
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   Future<void> addSociety(SocietyModal society) async {
     try {
       await supabase.from('societies').insert(society.toMap());

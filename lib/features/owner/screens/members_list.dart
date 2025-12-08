@@ -5,7 +5,8 @@ import 'package:my_gate_clone/utilis/appbar.dart';
 import 'package:provider/provider.dart';
 
 class MembersListScreen extends StatefulWidget {
-  const MembersListScreen({super.key});
+  final int societyId;
+  const MembersListScreen({super.key, required this.societyId});
 
   @override
   State<MembersListScreen> createState() => _MembersListScreenState();
@@ -20,7 +21,7 @@ class _MembersListScreenState extends State<MembersListScreen> {
     fetchFuture = Provider.of<MembersProvider>(
       context,
       listen: false,
-    ).fatchMembersList();
+    ).fatchMembersList(widget.societyId);
   }
 
   @override

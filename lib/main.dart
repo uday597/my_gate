@@ -4,7 +4,9 @@ import 'package:my_gate_clone/features/members/providers/guest.dart';
 import 'package:my_gate_clone/features/members/providers/login_provider.dart';
 import 'package:my_gate_clone/features/owner/provider/login_provider.dart';
 import 'package:my_gate_clone/features/owner/provider/members_provider.dart';
+import 'package:my_gate_clone/features/owner/provider/notice.dart';
 import 'package:my_gate_clone/features/owner/provider/security_guard.dart';
+import 'package:my_gate_clone/features/owner/provider/service_provider.dart';
 import 'package:my_gate_clone/features/security_guard/providers/login.dart';
 import 'package:my_gate_clone/routing/routing.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +21,7 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => NoticeProvider()),
         ChangeNotifierProvider(create: (_) => RequestProvider()),
         ChangeNotifierProvider(create: (_) => SecurityGuardLoginProvider()),
         ChangeNotifierProvider(create: (_) => SecurityGuardProvider()),
@@ -26,6 +29,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => MembersProvider()),
         ChangeNotifierProvider(create: (_) => SocietyProvider()),
         ChangeNotifierProvider(create: (_) => OwnerLoginProvider()),
+        ChangeNotifierProvider(create: (_) => ServiceProviders()),
       ],
       child: MyApp(),
     ),

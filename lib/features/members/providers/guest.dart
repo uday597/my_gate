@@ -45,7 +45,7 @@ class RequestProvider with ChangeNotifier {
 
       final data = await supabase
           .from("guest_requests")
-          .select()
+          .select('*, members:member_id(member_name)')
           .eq("id", requestId)
           .maybeSingle();
 
@@ -66,6 +66,7 @@ class RequestProvider with ChangeNotifier {
     required String guestAddress,
     required String guestPhone,
     File? guestImageFile,
+    required String requestType,
   }) async {
     try {
       String? imageUrl;
@@ -84,6 +85,7 @@ class RequestProvider with ChangeNotifier {
             "guest_phone": guestPhone,
             "guest_image": imageUrl ?? "",
             "status": "pending",
+            'request_type': requestType,
             "created_at": DateTime.now().toIso8601String(),
           })
           .select()
@@ -106,6 +108,25 @@ class RequestProvider with ChangeNotifier {
     } catch (e) {
       debugPrint("Add Request Error: $e");
       return false;
+    }
+  }
+
+  Future<void> updateStatus(String status, int id) async {
+    try {
+      await supabase
+          .from("guest_requests")
+          .update({
+            "status": status,
+            "guard_action_at": DateTime.now().toIso8601String(),
+          })
+          .eq("id", id);
+
+      // Refresh the list after update
+      fetchRequests(_requests.first.societyId);
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Update Status Error: $e");
     }
   }
 
@@ -161,7 +182,7 @@ class RequestProvider with ChangeNotifier {
     try {
       final response = await supabase
           .from("guest_requests")
-          .select()
+          .select('*, members:member_id(member_name)')
           .eq("society_id", societyId)
           .order("id", ascending: false);
 
