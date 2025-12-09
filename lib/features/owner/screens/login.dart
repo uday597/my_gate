@@ -23,7 +23,7 @@ class _OwnerLoginState extends State<OwnerLogin> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: reuseAppBar(title: "Owner Login"),
+      appBar: reuseAppBar(title: "Secretary Login"),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -42,7 +42,7 @@ class _OwnerLoginState extends State<OwnerLogin> {
             const SizedBox(height: 10),
 
             const Text(
-              "Welcome, Society Owner!",
+              "Welcome, Society Secretary!",
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class _OwnerLoginState extends State<OwnerLogin> {
                     children: [
                       buildField(
                         controller: emailController,
-                        label: "Owner Email",
+                        label: "Secretary Email",
                         keyboard: TextInputType.emailAddress,
                         validator: (v) =>
                             v == null || v.isEmpty ? "Enter email" : null,

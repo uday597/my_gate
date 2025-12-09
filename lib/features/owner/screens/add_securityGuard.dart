@@ -119,6 +119,7 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: reuseAppBar(title: "Add Security Guard"),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -143,7 +144,6 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
     );
   }
 
-  // UI Components remain the same...
   Widget _buildProfileSection() {
     return Column(
       children: [
@@ -152,7 +152,7 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: const Color.fromARGB(255, 235, 235, 235),
+                color: Colors.grey.shade100,
                 blurRadius: 2,
                 spreadRadius: 1,
               ),
@@ -202,9 +202,10 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
 
   Widget _buildFormCard() {
     return Card(
+      color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 4,
-      shadowColor: Colors.black12,
+      shadowColor: Colors.black38,
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Form(

@@ -57,6 +57,24 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
         'screen': Notice(socityId: widget.owner.id),
         'color': const Color(0xFF9F7AEA),
       },
+      {
+        'title': 'Payments',
+        'icon': Icons.payments,
+        'screen': Notice(socityId: widget.owner.id),
+        'color': Colors.yellow,
+      },
+      {
+        'title': 'Complaints',
+        'icon': Icons.edit_document,
+        'screen': Notice(socityId: widget.owner.id),
+        'color': Colors.teal,
+      },
+      {
+        'title': 'Emergency Alerts',
+        'icon': Icons.add_alert,
+        'screen': Notice(socityId: widget.owner.id),
+        'color': Colors.red,
+      },
     ];
 
     return Scaffold(
@@ -165,7 +183,7 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
+                crossAxisCount: 3,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
                 childAspectRatio: 0.85,

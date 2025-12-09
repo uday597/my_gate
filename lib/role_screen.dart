@@ -56,15 +56,19 @@ class _RoleScreenState extends State<RoleScreen> {
                     roleCard("Admin", "assets/images/admin.png", () {
                       Navigator.pushNamed(context, '/addsociety');
                     }),
-                    roleCard("Owner", "assets/images/owner.png", () {
+                    roleCard("Secretary", "assets/images/owner.png", () {
                       Navigator.pushNamed(context, '/ownerlogin');
                     }),
                     roleCard("Members", "assets/images/members.png", () {
                       Navigator.pushNamed(context, '/memberlogin');
                     }),
-                    roleCard("Security", "assets/images/security.png", () {
-                      Navigator.pushNamed(context, '/guardlogin');
-                    }),
+                    roleCard(
+                      "Security Guard",
+                      "assets/images/security.png",
+                      () {
+                        Navigator.pushNamed(context, '/guardlogin');
+                      },
+                    ),
                   ],
                 ),
               ),

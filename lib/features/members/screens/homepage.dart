@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/members/screens/guest_request.dart';
+import 'package:my_gate_clone/features/members/screens/help_requestscreen.dart';
 import 'package:my_gate_clone/features/members/screens/notice.dart';
 import 'package:my_gate_clone/features/members/screens/service_providers.dart';
 import 'package:my_gate_clone/features/members/screens/view_requests.dart';
@@ -127,7 +128,7 @@ class MemberHomepage extends StatelessWidget {
             const SizedBox(height: 16),
 
             GridView.count(
-              crossAxisCount: 4,
+              crossAxisCount: 3,
               shrinkWrap: true,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
@@ -137,6 +138,20 @@ class MemberHomepage extends StatelessWidget {
                   icon: Icons.handshake_rounded,
                   title: "Quick Help",
                   color: const Color(0xFF667EEA),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HelpRequestListScreen(
+                          currentMemberFlat: member.memberFlatNo,
+                          currentMemberName: member.memberName,
+                          currentMemberPhone: member.memberPhone,
+                          societyId: member.societyId,
+                          memberId: member.id,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 _buildActionButton(
                   icon: Icons.front_hand_outlined,

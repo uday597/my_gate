@@ -14,12 +14,10 @@ PreferredSizeWidget reuseAppBar({
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     ),
 
-    // 👇 SHOW FILTER ICON ONLY WHEN ontap IS NOT NULL
     actions: [
       if (ontap != null)
         IconButton(onPressed: ontap, icon: const Icon(Icons.filter_list)),
 
-      // also include additional actions if passed
       if (actions != null) ...actions,
     ],
 

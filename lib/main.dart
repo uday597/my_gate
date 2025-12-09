@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/admin/provider/society_provider.dart';
 import 'package:my_gate_clone/features/members/providers/guest.dart';
+import 'package:my_gate_clone/features/members/providers/help_request.dart';
+import 'package:my_gate_clone/features/members/providers/help_response.dart';
 import 'package:my_gate_clone/features/members/providers/login_provider.dart';
 import 'package:my_gate_clone/features/owner/provider/login_provider.dart';
 import 'package:my_gate_clone/features/owner/provider/members_provider.dart';
@@ -21,6 +23,9 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => HelpProvider()),
+        ChangeNotifierProvider(create: (_) => HelpResponseProvider()),
+
         ChangeNotifierProvider(create: (_) => NoticeProvider()),
         ChangeNotifierProvider(create: (_) => RequestProvider()),
         ChangeNotifierProvider(create: (_) => SecurityGuardLoginProvider()),
