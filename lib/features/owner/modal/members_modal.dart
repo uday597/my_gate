@@ -7,6 +7,16 @@ class MembersModal {
   final String memberAddress;
   final String? memberImage;
   final String memberFlatNo;
+  final String tower;
+
+  final String totalVehicle;
+
+  final String vehicleNo;
+  final String dob;
+
+  final String gender;
+
+  final String idProof;
 
   MembersModal({
     required this.id,
@@ -15,6 +25,12 @@ class MembersModal {
     required this.memberAddress,
     required this.memberFlatNo,
     this.memberImage,
+    required this.dob,
+    required this.gender,
+    required this.vehicleNo,
+    required this.totalVehicle,
+    required this.tower,
+    required this.idProof,
     required this.memberName,
     required this.memberPhone,
   });
@@ -28,6 +44,12 @@ class MembersModal {
       memberImage: data['profile_image'],
       memberName: data['member_name'],
       memberPhone: data['member_phone'],
+      dob: data['dob'],
+      vehicleNo: data['vehicle_no'],
+      totalVehicle: data['vehicle_count'],
+      gender: data['gender'],
+      idProof: data['id_proof'],
+      tower: data['tower'],
     );
   }
 
@@ -40,6 +62,12 @@ class MembersModal {
       'member_address': memberAddress,
       'flat_no': memberFlatNo,
       'profile_image': memberImage,
+      'dob': dob,
+      'tower': tower,
+      'vehicle_count': totalVehicle,
+      'vehicle_no': vehicleNo,
+      'gender': gender,
+      'id_proof': idProof,
     };
   }
 }

@@ -22,6 +22,13 @@ class _AddMembersState extends State<AddMembers> {
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
   final flatController = TextEditingController();
+  final towerController = TextEditingController();
+  final dobController = TextEditingController();
+  final totalVehicleController = TextEditingController();
+  final vehicleNoController = TextEditingController();
+  final idProofController = TextEditingController();
+
+  String gender = "Male";
 
   File? pickedImage;
   final picker = ImagePicker();
@@ -42,6 +49,12 @@ class _AddMembersState extends State<AddMembers> {
     phoneController.dispose();
     addressController.dispose();
     flatController.dispose();
+    towerController.dispose();
+    dobController.dispose();
+    totalVehicleController.dispose();
+    vehicleNoController.dispose();
+    idProofController.dispose();
+
     super.dispose();
   }
 
@@ -139,6 +152,102 @@ class _AddMembersState extends State<AddMembers> {
                   return null;
                 },
               ),
+              // TOWER
+              buildTextFormField(
+                controller: towerController,
+                label: "Tower / Block",
+                icon: Icons.business,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter tower name";
+                  }
+                  return null;
+                },
+              ),
+
+              // GENDER DROPDOWN
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: DropdownButtonFormField<String>(
+                  value: gender,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(
+                      Icons.person_outline,
+                      color: Colors.lightBlueAccent,
+                    ),
+                    labelText: "Gender",
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  items: ["Male", "Female", "Other"]
+                      .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                      .toList(),
+                  onChanged: (value) => setState(() => gender = value!),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please select gender";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+
+              // DOB
+              buildTextFormField(
+                controller: dobController,
+                label: "Date of Birth (DD/MM/YYYY)",
+                icon: Icons.calendar_month,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter DOB";
+                  }
+                  return null;
+                },
+              ),
+
+              // TOTAL VEHICLES
+              buildTextFormField(
+                controller: totalVehicleController,
+                label: "Total Vehicles",
+                icon: Icons.directions_car_filled,
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter number of vehicles";
+                  }
+                  return null;
+                },
+              ),
+
+              // VEHICLE NUMBER
+              buildTextFormField(
+                controller: vehicleNoController,
+                label: "Vehicle Number",
+                icon: Icons.numbers,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter vehicle number";
+                  }
+                  return null;
+                },
+              ),
+
+              // ID PROOF
+              buildTextFormField(
+                controller: idProofController,
+                label: "ID Proof (Aadhar/PAN/etc.)",
+                icon: Icons.badge,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter ID proof";
+                  }
+                  return null;
+                },
+              ),
 
               const SizedBox(height: 30),
 
@@ -199,6 +308,12 @@ class _AddMembersState extends State<AddMembers> {
                       memberAddress: addressController.text.trim(),
                       memberFlatNo: flatController.text.trim(),
                       memberImage: imageName,
+                      tower: towerController.text.trim(),
+                      gender: gender,
+                      dob: dobController.text.trim(),
+                      totalVehicle: totalVehicleController.text.trim(),
+                      vehicleNo: vehicleNoController.text.trim(),
+                      idProof: idProofController.text.trim(),
                     );
 
                     await membersProvider.addMembers(newMember);

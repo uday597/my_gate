@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/admin/screens/add_society%20.dart';
-import 'package:my_gate_clone/features/members/screens/events.dart';
 import 'package:my_gate_clone/features/members/screens/login.dart';
 import 'package:my_gate_clone/features/owner/screens/login.dart';
 import 'package:my_gate_clone/features/security_guard/screens/login.dart';
@@ -15,6 +14,5 @@ class AppRouting {
     '/ownerlogin': (context) => OwnerLogin(),
     '/memberlogin': (context) => MemberLogin(),
     '/guardlogin': (context) => SecurityGuardLogin(),
-    '/events': (context) => EventsScreen(),
   };
 }

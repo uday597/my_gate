@@ -178,12 +178,12 @@ class RequestProvider with ChangeNotifier {
   }
 
   // FETCH
-  Future<void> fetchRequests(int societyId) async {
+  Future<void> fetchRequests(int memberId) async {
     try {
       final response = await supabase
           .from("guest_requests")
           .select('*, members:member_id(member_name)')
-          .eq("society_id", societyId)
+          .eq("member_id", memberId)
           .order("id", ascending: false);
 
       _requests = response.map((e) => GuestRequest.fromMap(e)).toList();

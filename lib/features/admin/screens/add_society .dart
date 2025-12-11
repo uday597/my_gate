@@ -21,7 +21,11 @@ class _SocietyScreenState extends State<SocietyScreen> {
   final TextEditingController societyPasswordCrtl = TextEditingController();
   final TextEditingController societyEmailCrtl = TextEditingController();
   final TextEditingController societyAddressCrtl = TextEditingController();
-
+  final TextEditingController pincodeCrtl = TextEditingController();
+  final TextEditingController cityCrtl = TextEditingController();
+  final TextEditingController stateCrtl = TextEditingController();
+  final TextEditingController flatsCrtl = TextEditingController();
+  final TextEditingController towersCrtl = TextEditingController();
   bool isLoading = false;
 
   @override
@@ -52,9 +56,9 @@ class _SocietyScreenState extends State<SocietyScreen> {
             )
           : null,
 
-      body: provider.societies.isEmpty
-          ? buildAddSocietyForm(provider)
-          : buildSocietyList(provider),
+      body: provider.societies.isNotEmpty
+          ? buildSocietyList(provider)
+          : buildAddSocietyForm(provider),
     );
   }
 
@@ -198,8 +202,40 @@ class _SocietyScreenState extends State<SocietyScreen> {
             keyboardType: TextInputType.emailAddress,
           ),
           buildTextField(
+            controller: pincodeCrtl,
+            label: 'Pincode',
+            keyboardType: TextInputType.phone,
+
+            validator: (v) => v!.isEmpty ? "Enter pincode" : null,
+          ),
+          buildTextField(
+            controller: cityCrtl,
+            label: 'City',
+            validator: (v) => v!.isEmpty ? "Enter city name" : null,
+          ),
+          buildTextField(
+            controller: stateCrtl,
+            label: 'State',
+            validator: (v) => v!.isEmpty ? "Enter state name" : null,
+          ),
+          buildTextField(
+            controller: towersCrtl,
+            label: 'Total Towers',
+            keyboardType: TextInputType.phone,
+
+            validator: (v) => v!.isEmpty ? "Enter total towers" : null,
+          ),
+          buildTextField(
+            controller: flatsCrtl,
+            label: 'Total Flats',
+            keyboardType: TextInputType.phone,
+
+            validator: (v) => v!.isEmpty ? "Enter total flats" : null,
+          ),
+          buildTextField(
             controller: societyAddressCrtl,
             label: 'Society Address',
+
             validator: (v) => v!.isEmpty ? "Enter address" : null,
           ),
         ],
@@ -227,6 +263,11 @@ class _SocietyScreenState extends State<SocietyScreen> {
                   final society = SocietyModal(
                     id: 0,
                     societyName: societyNameCrtl.text,
+                    pincode: pincodeCrtl.text,
+                    city: cityCrtl.text,
+                    state: stateCrtl.text,
+                    total_flats: flatsCrtl.text,
+                    total_towers: towersCrtl.text,
                     societyPassword: societyPasswordCrtl.text,
                     ownerName: societyOwnerCrtl.text,
                     ownerPhone: societyOwnerPhoneCrtl.text,
@@ -236,7 +277,11 @@ class _SocietyScreenState extends State<SocietyScreen> {
 
                   await provider.addSociety(society);
                   await provider.fetchSocieties();
-
+                  pincodeCrtl.clear();
+                  cityCrtl.clear();
+                  stateCrtl.clear();
+                  towersCrtl.clear();
+                  flatsCrtl.clear();
                   societyNameCrtl.clear();
                   societyPasswordCrtl.clear();
                   societyOwnerCrtl.clear();

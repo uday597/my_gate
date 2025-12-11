@@ -22,7 +22,10 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
   final nameCtrl = TextEditingController();
   final phoneCtrl = TextEditingController();
   final addressCtrl = TextEditingController();
+  final dobCtrl = TextEditingController();
+  final idProofCtrl = TextEditingController();
 
+  String? selectedGender;
   bool _isLoading = false;
 
   // Pick image
@@ -64,6 +67,9 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
         name: nameCtrl.text.trim(),
         phone: phoneCtrl.text.trim(),
         address: addressCtrl.text.trim(),
+        dob: dobCtrl.text.trim(),
+        idProof: idProofCtrl.text.trim(),
+        gender: selectedGender ?? "",
         profileImage: imageUrl,
         createdAt: null,
       );
@@ -112,6 +118,8 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
     nameCtrl.dispose();
     phoneCtrl.dispose();
     addressCtrl.dispose();
+    dobCtrl.dispose();
+    idProofCtrl.dispose();
     super.dispose();
   }
 
@@ -219,6 +227,7 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
                 enabled: !_isLoading,
                 validator: (v) => v!.isEmpty ? "Enter guard name" : null,
               ),
+
               _inputField(
                 controller: phoneCtrl,
                 label: "Phone Number",
@@ -233,6 +242,7 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
                   return null;
                 },
               ),
+
               _inputField(
                 controller: addressCtrl,
                 label: "Address",
@@ -240,6 +250,18 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
                 enabled: !_isLoading,
                 validator: (v) => v!.isEmpty ? "Enter address" : null,
               ),
+
+              _dobPickerField(),
+
+              _inputField(
+                controller: idProofCtrl,
+                label: "ID Proof Number(adhaar/pan/etc)",
+                icon: Icons.badge,
+                enabled: !_isLoading,
+                validator: (v) => v!.isEmpty ? "Enter ID Proof Number" : null,
+              ),
+
+              _genderDropdown(),
             ],
           ),
         ),
@@ -280,6 +302,62 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _genderDropdown() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: DropdownButtonFormField<String>(
+        value: selectedGender,
+        items: const [
+          DropdownMenuItem(value: "Male", child: Text("Male")),
+          DropdownMenuItem(value: "Female", child: Text("Female")),
+          DropdownMenuItem(value: "Other", child: Text("Other")),
+        ],
+        onChanged: _isLoading
+            ? null
+            : (value) {
+                setState(() => selectedGender = value);
+              },
+        decoration: InputDecoration(
+          labelText: "Gender",
+          prefixIcon: const Icon(Icons.people),
+          filled: true,
+          fillColor: Colors.grey.shade100,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        validator: (v) => v == null ? "Select gender" : null,
+      ),
+    );
+  }
+
+  Widget _dobPickerField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextFormField(
+        controller: dobCtrl,
+        readOnly: true,
+        onTap: () async {
+          DateTime? picked = await showDatePicker(
+            context: context,
+            firstDate: DateTime(1950),
+            lastDate: DateTime.now(),
+            initialDate: DateTime(2000),
+          );
+          if (picked != null) {
+            dobCtrl.text = "${picked.year}-${picked.month}-${picked.day}";
+          }
+        },
+        decoration: InputDecoration(
+          prefixIcon: const Icon(Icons.calendar_today),
+          labelText: "Date of Birth",
+          filled: true,
+          fillColor: Colors.grey.shade100,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        validator: (v) => v!.isEmpty ? "Select DOB" : null,
       ),
     );
   }

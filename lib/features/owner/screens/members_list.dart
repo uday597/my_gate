@@ -47,73 +47,68 @@ class _MembersListScreenState extends State<MembersListScreen> {
             return const Center(child: Text("No members found"));
           }
 
-          return Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: membersProvider.members.length,
-              itemBuilder: (context, index) {
-                final member = membersProvider.members[index];
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: membersProvider.members.length,
+            itemBuilder: (context, index) {
+              final member = membersProvider.members[index];
 
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 6,
-                        offset: Offset(0, 3),
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(12),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditMemberInfo(memberId: member.id),
                       ),
-                    ],
+                    );
+                  },
+
+                  leading: CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.grey.shade200,
+                    backgroundImage:
+                        (member.memberImage != null &&
+                            member.memberImage!.startsWith("http"))
+                        ? NetworkImage(member.memberImage!)
+                        : const AssetImage("assets/default_avatar.png")
+                              as ImageProvider,
                   ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(12),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              EditMemberInfo(memberId: member.id),
-                        ),
-                      );
-                    },
 
-                    leading: CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.grey.shade200,
-                      backgroundImage:
-                          (member.memberImage != null &&
-                              member.memberImage!.startsWith("http"))
-                          ? NetworkImage(member.memberImage!)
-                          : const AssetImage("assets/default_avatar.png")
-                                as ImageProvider,
-                    ),
-
-                    title: Text(
-                      member.memberName,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "Flat: ${member.memberFlatNo}",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.black54,
-                      ),
-                    ),
-
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios,
-                      size: 18,
-                      color: Colors.blueAccent,
+                  title: Text(
+                    member.memberName,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                );
-              },
-            ),
+                  subtitle: Text(
+                    "Flat: ${member.memberFlatNo}",
+                    style: const TextStyle(fontSize: 15, color: Colors.black54),
+                  ),
+
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 18,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+              );
+            },
           );
         },
       ),

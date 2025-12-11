@@ -78,7 +78,11 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
     ];
 
     return Scaffold(
-      appBar: reuseAppBar(title: "Owner Dashboard"),
+      appBar: reuseAppBar(
+        title: "Owner Dashboard",
+        showBack: false,
+        centerTittle: true,
+      ),
       backgroundColor: const Color(0xFFF8F9FA),
 
       body: SingleChildScrollView(

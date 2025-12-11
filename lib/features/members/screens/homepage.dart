@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/members/screens/guest_request.dart';
 import 'package:my_gate_clone/features/members/screens/help_requestscreen.dart';
+import 'package:my_gate_clone/features/members/screens/new_visitors.dart';
 import 'package:my_gate_clone/features/members/screens/notice.dart';
 import 'package:my_gate_clone/features/members/screens/service_providers.dart';
 import 'package:my_gate_clone/features/members/screens/view_requests.dart';
@@ -16,7 +17,11 @@ class MemberHomepage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: reuseAppBar(title: "Member Dashboard"),
+      appBar: reuseAppBar(
+        title: "Member Dashboard",
+        showBack: false,
+        centerTittle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -168,7 +173,7 @@ class MemberHomepage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            GuestRequestListScreen(societyId: member.societyId),
+                            GuestRequestListScreen(memberId: member.id),
                       ),
                     );
                   },
@@ -203,13 +208,20 @@ class MemberHomepage extends StatelessWidget {
                   },
                 ),
                 _buildActionButton(
-                  icon: Icons.event_note,
-                  title: "Events",
-                  color: const Color(0xFFF56565),
+                  icon: Icons.door_back_door,
+                  title: "Gate Requests",
+                  color: Colors.brown,
                   onTap: () {
-                    Navigator.pushNamed(context, '/events');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            MemberVisitorsScreen(memberId: member.id),
+                      ),
+                    );
                   },
                 ),
+
                 _buildActionButton(
                   icon: Icons.payments_outlined,
                   title: "Payments",
@@ -235,72 +247,15 @@ class MemberHomepage extends StatelessWidget {
             ),
 
             const SizedBox(height: 20),
-
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFB3E5FC), Color(0xFFFFF9C4)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Need help with something?",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF2D3748),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Post your request or find services from neighbors",
-                    style: TextStyle(fontSize: 14, color: Color(0xFF718096)),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const TextField(
-                            decoration: InputDecoration(
-                              hintText: "What are you looking for?",
-                              border: InputBorder.none,
-                              icon: Icon(
-                                Icons.search,
-                                color: Color(0xFF667EEA),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF667EEA),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: const Icon(
-                          Icons.filter_list,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            Text(
+              'Events',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF2D3748),
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -337,7 +292,7 @@ class MemberHomepage extends StatelessWidget {
                 color: color.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color, size: 24),
+              child: Icon(icon, color: color, size: 32),
             ),
             const SizedBox(height: 8),
             Text(
@@ -345,7 +300,7 @@ class MemberHomepage extends StatelessWidget {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 overflow: TextOverflow.ellipsis,
-                fontSize: 11,
+                fontSize: 13,
                 fontWeight: FontWeight.w500,
                 color: Color(0xFF4A5568),
               ),
@@ -356,7 +311,6 @@ class MemberHomepage extends StatelessWidget {
     );
   }
 
-  /// CATEGORY CHIP
   void showMemberInfo(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -404,7 +358,9 @@ class MemberHomepage extends StatelessWidget {
                 infoCard("Phone", member.memberPhone),
                 infoCard("Flat No", member.memberFlatNo),
                 infoCard("Address", member.memberAddress),
-                infoCard("Society ID", member.societyId.toString()),
+                infoCard("tower", member.tower),
+                infoCard("Total Vehicles", member.totalVehicle),
+                infoCard("Vehicle No", member.vehicleNo),
 
                 const SizedBox(height: 20),
               ],
@@ -466,7 +422,10 @@ class MemberHomepage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => GuestRequestScreen(member: member),
+                      builder: (_) => GuestRequestScreen(
+                        member: member,
+                        defaultRequestType: 'Guest',
+                      ),
                     ),
                   );
                 },
@@ -474,26 +433,32 @@ class MemberHomepage extends StatelessWidget {
 
               ListTile(
                 leading: const Icon(Icons.delivery_dining, color: Colors.blue),
-                title: const Text("Delivary Boy"),
+                title: const Text("Delivery Boy"),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => GuestRequestScreen(member: member),
+                      builder: (_) => GuestRequestScreen(
+                        member: member,
+                        defaultRequestType: 'Delivery Boy',
+                      ),
                     ),
                   );
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.family_restroom, color: Colors.blue),
-                title: const Text("Family Memeber"),
+                title: const Text("Family Member"),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => GuestRequestScreen(member: member),
+                      builder: (_) => GuestRequestScreen(
+                        member: member,
+                        defaultRequestType: 'Family Member',
+                      ),
                     ),
                   );
                 },

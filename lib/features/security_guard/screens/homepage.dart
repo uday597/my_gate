@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_gate_clone/features/owner/modal/security_guard.dart';
 import 'package:my_gate_clone/features/security_guard/screens/contact_us.dart';
+import 'package:my_gate_clone/features/security_guard/screens/new_visitor.dart';
 import 'package:my_gate_clone/features/security_guard/screens/scanner.dart';
 import 'package:my_gate_clone/features/security_guard/screens/visitors.dart';
 import 'package:my_gate_clone/utilis/appbar.dart';
@@ -14,7 +15,11 @@ class GuardHomepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: reuseAppBar(title: "Guard Dashboard"),
+      appBar: reuseAppBar(
+        title: "Guard Dashboard",
+        showBack: false,
+        centerTittle: true,
+      ),
       backgroundColor: Colors.white,
 
       body: SingleChildScrollView(
@@ -95,6 +100,21 @@ class GuardHomepage extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) =>
                             VisitorsList(societyId: guard.societyId),
+                      ),
+                    );
+                  },
+                ),
+                buildMenuButton(
+                  icon: Icons.group_add,
+                  title: "New Visitor",
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddVisitorScreen(
+                          societyId: guard.societyId,
+                          guardId: guard.id,
+                        ),
                       ),
                     );
                   },

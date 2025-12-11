@@ -9,7 +9,7 @@
     </queries>
 
     <application
-        android:label="my_gate_clone"
+        android:label="SmartDwaar"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

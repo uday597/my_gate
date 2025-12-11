@@ -29,20 +29,13 @@ class SecurityGuardProvider with ChangeNotifier {
     }
   }
 
-  // Add new guard
   Future<bool> addGuard(SecurityGuardModal guard) async {
     try {
       debugPrint("Adding guard with data: ${guard.toMap()}");
 
       final response = await supabase
           .from('security_guard')
-          .insert({
-            'society_id': guard.societyId,
-            'name': guard.name,
-            'phone': guard.phone,
-            'address': guard.address,
-            'profile_image': guard.profileImage,
-          })
+          .insert(guard.toMap())
           .select()
           .single();
       debugPrint("Insert response: $response");
@@ -67,15 +60,20 @@ class SecurityGuardProvider with ChangeNotifier {
   // Update guard
   Future<bool> updateGuard(SecurityGuardModal guard) async {
     try {
+      final updateData = {
+        'name': guard.name,
+        'phone': guard.phone,
+        'address': guard.address,
+        'dob': guard.dob,
+        'id_proof': guard.idProof,
+        'gender': guard.gender,
+        'profile_image': guard.profileImage,
+      };
+
       final res = await supabase
           .from('security_guard')
-          .update({
-            'name': guard.name,
-            'phone': guard.phone,
-            'address': guard.address,
-            'profile_image': guard.profileImage,
-          })
-          .eq('id', guard.id!)
+          .update(updateData)
+          .eq('id', guard.id)
           .select()
           .single();
 

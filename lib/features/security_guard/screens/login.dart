@@ -108,7 +108,7 @@ class _SecurityGuardLoginState extends State<SecurityGuardLogin> {
                                         ),
                                       );
 
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => GuardHomepage(

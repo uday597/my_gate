@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/admin/provider/society_provider.dart';
+import 'package:my_gate_clone/features/members/providers/events.dart';
+import 'package:my_gate_clone/features/members/providers/events_response.dart';
 import 'package:my_gate_clone/features/members/providers/guest.dart';
 import 'package:my_gate_clone/features/members/providers/help_request.dart';
 import 'package:my_gate_clone/features/members/providers/help_response.dart';
@@ -10,6 +12,7 @@ import 'package:my_gate_clone/features/owner/provider/notice.dart';
 import 'package:my_gate_clone/features/owner/provider/security_guard.dart';
 import 'package:my_gate_clone/features/owner/provider/service_provider.dart';
 import 'package:my_gate_clone/features/security_guard/providers/login.dart';
+import 'package:my_gate_clone/features/security_guard/providers/visitor.dart';
 import 'package:my_gate_clone/routing/routing.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -23,6 +26,10 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => VisitorProvider()),
+        ChangeNotifierProvider(create: (_) => EventProvider()),
+        ChangeNotifierProvider(create: (_) => EventResponseProvider()),
+
         ChangeNotifierProvider(create: (_) => HelpProvider()),
         ChangeNotifierProvider(create: (_) => HelpResponseProvider()),
 

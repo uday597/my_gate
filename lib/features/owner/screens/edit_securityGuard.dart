@@ -22,6 +22,10 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController addressController;
+  late TextEditingController dobController;
+  late TextEditingController idProofController;
+
+  String? selectedGender;
 
   File? pickedImageFile;
   bool isLoading = false;
@@ -33,6 +37,11 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
     nameController = TextEditingController(text: widget.guard.name);
     phoneController = TextEditingController(text: widget.guard.phone);
     addressController = TextEditingController(text: widget.guard.address);
+
+    dobController = TextEditingController(text: widget.guard.dob);
+    idProofController = TextEditingController(text: widget.guard.idProof);
+
+    selectedGender = widget.guard.gender;
   }
 
   Future pickImage() async {
@@ -63,7 +72,11 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
       name: nameController.text.trim(),
       phone: phoneController.text.trim(),
       address: addressController.text.trim(),
+      dob: dobController.text.trim(),
+      idProof: idProofController.text.trim(),
+      gender: selectedGender ?? "",
       profileImage: newImageUrl ?? widget.guard.profileImage,
+      createdAt: widget.guard.createdAt,
     );
 
     final success = await provider.updateGuard(updatedGuard);
@@ -79,6 +92,19 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Update Failed")));
+    }
+  }
+
+  Future selectDob() async {
+    final picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+      initialDate: DateTime.tryParse(widget.guard.dob) ?? DateTime(2000),
+    );
+
+    if (picked != null) {
+      dobController.text = "${picked.year}-${picked.month}-${picked.day}";
     }
   }
 
@@ -124,7 +150,6 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
                 decoration: input("Guard Name"),
                 validator: (v) => v!.isEmpty ? "Name required" : null,
               ),
-
               const SizedBox(height: 15),
 
               // PHONE
@@ -132,9 +157,8 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
                 controller: phoneController,
                 decoration: input("Phone Number"),
                 keyboardType: TextInputType.phone,
-                validator: (v) => v!.length < 10 ? "Enter valid number" : null,
+                validator: (v) => v!.length != 10 ? "Enter valid number" : null,
               ),
-
               const SizedBox(height: 15),
 
               // ADDRESS
@@ -143,6 +167,42 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
                 decoration: input("Address"),
                 maxLines: 2,
                 validator: (v) => v!.isEmpty ? "Required" : null,
+              ),
+              const SizedBox(height: 15),
+
+              // DOB
+              TextFormField(
+                controller: dobController,
+                readOnly: true,
+                decoration: input(
+                  "Date of Birth",
+                ).copyWith(suffixIcon: const Icon(Icons.calendar_month)),
+                onTap: selectDob,
+                validator: (v) => v!.isEmpty ? "Select DOB" : null,
+              ),
+              const SizedBox(height: 15),
+
+              // ID PROOF
+              TextFormField(
+                controller: idProofController,
+                decoration: input("ID Proof Number"),
+                validator: (v) => v!.isEmpty ? "Required" : null,
+              ),
+              const SizedBox(height: 15),
+
+              // GENDER
+              DropdownButtonFormField<String>(
+                value: selectedGender,
+                decoration: input("Gender"),
+                items: const [
+                  DropdownMenuItem(value: "Male", child: Text("Male")),
+                  DropdownMenuItem(value: "Female", child: Text("Female")),
+                  DropdownMenuItem(value: "Other", child: Text("Other")),
+                ],
+                onChanged: (value) {
+                  setState(() => selectedGender = value);
+                },
+                validator: (v) => v == null ? "Select gender" : null,
               ),
 
               const SizedBox(height: 25),

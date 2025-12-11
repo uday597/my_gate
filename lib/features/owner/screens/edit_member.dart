@@ -26,6 +26,13 @@ class _EditMemberInfoState extends State<EditMemberInfo> {
   late TextEditingController phoneController;
   late TextEditingController addressController;
   late TextEditingController flatController;
+  late TextEditingController towerController;
+  late TextEditingController dobController;
+  late TextEditingController totalVehicleController;
+  late TextEditingController vehicleNoController;
+  late TextEditingController idProofController;
+
+  String selectedGender = "Male";
 
   @override
   void initState() {
@@ -40,6 +47,13 @@ class _EditMemberInfoState extends State<EditMemberInfo> {
     phoneController = TextEditingController(text: member!.memberPhone);
     addressController = TextEditingController(text: member!.memberAddress);
     flatController = TextEditingController(text: member!.memberFlatNo);
+    towerController = TextEditingController(text: member!.tower);
+    dobController = TextEditingController(text: member!.dob);
+    totalVehicleController = TextEditingController(text: member!.totalVehicle);
+    vehicleNoController = TextEditingController(text: member!.vehicleNo);
+    idProofController = TextEditingController(text: member!.idProof);
+
+    selectedGender = member!.gender;
   }
 
   Future<void> pickImage() async {
@@ -75,6 +89,12 @@ class _EditMemberInfoState extends State<EditMemberInfo> {
       memberAddress: addressController.text.trim(),
       memberFlatNo: flatController.text.trim(),
       memberImage: imageUrl,
+      tower: towerController.text.trim(),
+      gender: selectedGender,
+      dob: dobController.text.trim(),
+      totalVehicle: totalVehicleController.text.trim(),
+      vehicleNo: vehicleNoController.text.trim(),
+      idProof: idProofController.text.trim(),
     );
 
     await provider.updateMember(updatedMember, updatedMember);
@@ -201,6 +221,100 @@ class _EditMemberInfoState extends State<EditMemberInfo> {
                               icon: Icons.home,
                               validator: (v) =>
                                   v!.isEmpty ? "Flat number required" : null,
+                            ),
+                            // Tower
+                            buildInputField(
+                              controller: towerController,
+                              label: "Tower / Block",
+                              icon: Icons.apartment,
+                              validator: (v) =>
+                                  v!.isEmpty ? "Enter tower name" : null,
+                            ),
+
+                            // Gender Dropdown
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: DropdownButtonFormField<String>(
+                                value: selectedGender,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(
+                                    Icons.person_outline,
+                                    color: Colors.blue,
+                                  ),
+                                  labelText: "Gender",
+                                  filled: true,
+                                  fillColor: Colors.grey.shade100,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                items: ["Male", "Female", "Other"]
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Text(e),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (v) =>
+                                    setState(() => selectedGender = v!),
+                              ),
+                            ),
+
+                            // DOB with date picker
+                            InkWell(
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1950),
+                                  lastDate: DateTime.now(),
+                                );
+
+                                if (pickedDate != null) {
+                                  dobController.text =
+                                      "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                                  setState(() {});
+                                }
+                              },
+                              child: IgnorePointer(
+                                child: buildInputField(
+                                  controller: dobController,
+                                  label: "Date of Birth",
+                                  icon: Icons.calendar_month,
+                                  validator: (v) =>
+                                      v!.isEmpty ? "Enter DOB" : null,
+                                ),
+                              ),
+                            ),
+
+                            // Total Vehicles
+                            buildInputField(
+                              controller: totalVehicleController,
+                              label: "Total Vehicles",
+                              icon: Icons.directions_car_outlined,
+                              validator: (v) => v!.isEmpty
+                                  ? "Enter number of vehicles"
+                                  : null,
+                            ),
+
+                            // Vehicle Number
+                            buildInputField(
+                              controller: vehicleNoController,
+                              label: "Vehicle Number",
+                              icon: Icons.confirmation_number,
+                              validator: (v) =>
+                                  v!.isEmpty ? "Enter vehicle number" : null,
+                            ),
+
+                            // ID Proof
+                            buildInputField(
+                              controller: idProofController,
+                              label: "ID Proof (Aadhar / PAN / Passport)",
+                              icon: Icons.badge,
+                              validator: (v) =>
+                                  v!.isEmpty ? "Enter ID proof" : null,
                             ),
                           ],
                         ),

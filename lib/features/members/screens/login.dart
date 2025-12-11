@@ -122,7 +122,7 @@ class _MemberLoginState extends State<MemberLogin> {
                                         ),
                                       );
 
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>

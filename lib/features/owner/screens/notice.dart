@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/owner/provider/notice.dart';
 import 'package:my_gate_clone/utilis/appbar.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Notice extends StatefulWidget {
   final int socityId;
@@ -13,6 +15,7 @@ class Notice extends StatefulWidget {
 
 class _NoticeState extends State<Notice> {
   TextEditingController noticeCRTL = TextEditingController();
+  File? pickedImage;
 
   @override
   void initState() {
@@ -23,6 +26,11 @@ class _NoticeState extends State<Notice> {
     ).getNotices(widget.socityId);
   }
 
+  Future pickImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) setState(() => pickedImage = File(picked.path));
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<NoticeProvider>(context);
@@ -30,7 +38,6 @@ class _NoticeState extends State<Notice> {
     return Scaffold(
       appBar: reuseAppBar(title: 'Notice Board'),
       backgroundColor: Colors.white,
-
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child: SingleChildScrollView(
@@ -39,14 +46,12 @@ class _NoticeState extends State<Notice> {
             children: [
               Text(
                 "Create New Notice",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
                 ),
               ),
-              SizedBox(height: 10),
-
+              const SizedBox(height: 10),
               Card(
                 color: Colors.white,
                 elevation: 4,
@@ -61,17 +66,27 @@ class _NoticeState extends State<Notice> {
                         controller: noticeCRTL,
                         maxLines: 5,
                         decoration: InputDecoration(
-                          label: Text("Write your notice..."),
+                          label: const Text("Write your notice..."),
                           hintText: "Example: Water supply off at 3 PM.",
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
                         ),
                       ),
-
-                      SizedBox(height: 20),
-
-                      /// ADD BUTTON
+                      const SizedBox(height: 10),
+                      if (pickedImage != null)
+                        Image.file(
+                          pickedImage!,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        ),
+                      const SizedBox(height: 10),
+                      ElevatedButton.icon(
+                        onPressed: pickImage,
+                        icon: const Icon(Icons.image),
+                        label: const Text("Upload Image"),
+                      ),
+                      const SizedBox(height: 20),
                       GestureDetector(
                         onTap: () async {
                           if (noticeCRTL.text.trim().isEmpty) return;
@@ -79,12 +94,14 @@ class _NoticeState extends State<Notice> {
                           await provider.addNotice(
                             societyId: widget.socityId,
                             notice: noticeCRTL.text.trim(),
+                            imageFile: pickedImage,
                           );
 
                           noticeCRTL.clear();
+                          pickedImage = null;
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text("Notice Added Successfully"),
                               backgroundColor: Colors.green,
                             ),
@@ -92,7 +109,7 @@ class _NoticeState extends State<Notice> {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: EdgeInsets.symmetric(vertical: 15),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
@@ -102,7 +119,7 @@ class _NoticeState extends State<Notice> {
                             ),
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               "Add Notice",
                               style: TextStyle(
@@ -118,27 +135,18 @@ class _NoticeState extends State<Notice> {
                   ),
                 ),
               ),
-
-              SizedBox(height: 25),
-
-              Text(
+              const SizedBox(height: 25),
+              const Text(
                 "Recent Notices",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black87,
-                ),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
               ),
-
-              SizedBox(height: 15),
-
-              /// NOTICE LIST
+              const SizedBox(height: 15),
               if (provider.isLoading)
-                Center(child: CircularProgressIndicator())
+                const Center(child: CircularProgressIndicator())
               else if (provider.notices.isEmpty)
-                Center(
+                const Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(25.0),
+                    padding: EdgeInsets.all(25.0),
                     child: Text(
                       "No notices found.\nAdd your first notice!",
                       textAlign: TextAlign.center,
@@ -149,15 +157,14 @@ class _NoticeState extends State<Notice> {
               else
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: provider.notices.length,
                   itemBuilder: (context, index) {
                     final n = provider.notices[index];
-
                     return Card(
                       color: Colors.white,
                       elevation: 3,
-                      margin: EdgeInsets.only(bottom: 15),
+                      margin: const EdgeInsets.only(bottom: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -168,29 +175,33 @@ class _NoticeState extends State<Notice> {
                           children: [
                             Text(
                               n['notice'],
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-
-                            SizedBox(height: 10),
-
+                            if (n['image'] != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Image.network(
+                                  n['image'],
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            const SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                /// UPDATE BUTTON
                                 TextButton(
                                   onPressed: () {
                                     _showUpdateDialog(context, n, provider);
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     "Update",
                                     style: TextStyle(color: Colors.blue),
                                   ),
                                 ),
-
-                                /// DELETE BUTTON
                                 TextButton(
                                   onPressed: () async {
                                     await provider.deleteNotice(
@@ -198,7 +209,7 @@ class _NoticeState extends State<Notice> {
                                       widget.socityId,
                                     );
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     "Delete",
                                     style: TextStyle(color: Colors.red),
                                   ),
@@ -218,9 +229,6 @@ class _NoticeState extends State<Notice> {
     );
   }
 
-  /// ---------------------------------------------
-  /// UPDATE NOTICE DIALOG
-  /// ---------------------------------------------
   void _showUpdateDialog(
     context,
     Map<String, dynamic> notice,
@@ -229,35 +237,71 @@ class _NoticeState extends State<Notice> {
     TextEditingController updateCtrl = TextEditingController(
       text: notice['notice'],
     );
+    File? updateImage;
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text("Update Notice"),
-          content: TextField(
-            controller: updateCtrl,
-            maxLines: 4,
-            decoration: InputDecoration(border: OutlineInputBorder()),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () async {
-                await provider.updateNotice(
-                  noticeId: notice['id'],
-                  noticeText: updateCtrl.text.trim(),
-                  societyId: widget.socityId,
-                );
+        return StatefulBuilder(
+          builder: (context, setState) {
+            Future pickUpdateImage() async {
+              final picked = await ImagePicker().pickImage(
+                source: ImageSource.gallery,
+              );
+              if (picked != null)
+                setState(() => updateImage = File(picked.path));
+            }
 
-                Navigator.pop(context);
-              },
-              child: Text("Update"),
-            ),
-          ],
+            return AlertDialog(
+              title: const Text("Update Notice"),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: updateCtrl,
+                      maxLines: 4,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    if (notice['image'] != null && updateImage == null)
+                      Image.network(
+                        notice['image'],
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    if (updateImage != null)
+                      Image.file(updateImage!, height: 150, fit: BoxFit.cover),
+                    const SizedBox(height: 10),
+                    ElevatedButton.icon(
+                      onPressed: pickUpdateImage,
+                      icon: const Icon(Icons.image),
+                      label: const Text("Change Image"),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await provider.updateNotice(
+                      noticeId: notice['id'],
+                      noticeText: updateCtrl.text.trim(),
+                      societyId: widget.socityId,
+                      imageFile: updateImage,
+                    );
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Update"),
+                ),
+              ],
+            );
+          },
         );
       },
     );

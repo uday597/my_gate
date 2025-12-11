@@ -122,7 +122,7 @@ class _OwnerLoginState extends State<OwnerLogin> {
                                         SnackBar(content: Text(result)),
                                       );
                                     } else {
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => OwnerHomepage(

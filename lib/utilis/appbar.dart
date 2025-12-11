@@ -4,8 +4,13 @@ PreferredSizeWidget reuseAppBar({
   required String title,
   List<Widget>? actions,
   VoidCallback? ontap,
+  bool showBack = true,
+  bool centerTittle = false,
 }) {
   return AppBar(
+    centerTitle: centerTittle,
+    automaticallyImplyLeading: showBack,
+    leading: showBack ? null : const SizedBox.shrink(),
     elevation: 0,
     foregroundColor: Colors.black87,
 

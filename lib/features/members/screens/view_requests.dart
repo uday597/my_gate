@@ -6,9 +6,9 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../providers/guest.dart';
 
 class GuestRequestListScreen extends StatefulWidget {
-  final int societyId;
+  final int memberId;
 
-  const GuestRequestListScreen({super.key, required this.societyId});
+  const GuestRequestListScreen({super.key, required this.memberId});
 
   @override
   State<GuestRequestListScreen> createState() => _GuestRequestListScreenState();
@@ -27,7 +27,7 @@ class _GuestRequestListScreenState extends State<GuestRequestListScreen> {
     Provider.of<RequestProvider>(
       context,
       listen: false,
-    ).fetchRequests(widget.societyId);
+    ).fetchRequests(widget.memberId);
   }
 
   @override
@@ -48,7 +48,7 @@ class _GuestRequestListScreenState extends State<GuestRequestListScreen> {
       backgroundColor: Colors.white,
       appBar: reuseAppBar(title: 'Requests', ontap: () => _showFilterDialog()),
       body: RefreshIndicator(
-        onRefresh: () => provider.fetchRequests(widget.societyId),
+        onRefresh: () => provider.fetchRequests(widget.memberId),
         child: filteredRequests.isEmpty
             ? const Center(
                 child: Text(

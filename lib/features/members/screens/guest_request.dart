@@ -8,8 +8,12 @@ import '../providers/guest.dart';
 
 class GuestRequestScreen extends StatefulWidget {
   final MembersModal member;
-
-  const GuestRequestScreen({super.key, required this.member});
+  final String defaultRequestType;
+  const GuestRequestScreen({
+    super.key,
+    required this.member,
+    required this.defaultRequestType,
+  });
 
   @override
   State<GuestRequestScreen> createState() => _GuestRequestScreenState();
@@ -26,6 +30,15 @@ class _GuestRequestScreenState extends State<GuestRequestScreen> {
 
   String selectedRequestType = 'guest';
   List<String> requestTypes = ['Guest', 'Delivery Boy', 'Family Member'];
+
+  void initState() {
+    super.initState();
+
+    selectedRequestType = widget.defaultRequestType.toLowerCase().replaceAll(
+      ' ',
+      '_',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +111,7 @@ class _GuestRequestScreenState extends State<GuestRequestScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    label: const Text("Pick Image"),
+                    label: const Text("Person Image"),
                   ),
                   const SizedBox(width: 12),
                   if (imageFile != null)

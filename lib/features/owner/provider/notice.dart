@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -13,14 +14,21 @@ class NoticeProvider with ChangeNotifier {
   Future<void> addNotice({
     required int societyId,
     required String notice,
+    File? imageFile,
   }) async {
     try {
       isLoading = true;
       notifyListeners();
 
+      String? imageUrl;
+      if (imageFile != null) {
+        imageUrl = await uploadNoticeImage(imageFile);
+      }
+
       await supabase.from('notice').insert({
         'society_id': societyId,
         'notice': notice,
+        'image': imageUrl,
       });
 
       await getNotices(societyId); // refresh list
@@ -31,8 +39,8 @@ class NoticeProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-  // GET ALL NOTICES
 
+  // GET ALL NOTICES
   Future<void> getNotices(int societyId) async {
     try {
       isLoading = true;
@@ -63,20 +71,50 @@ class NoticeProvider with ChangeNotifier {
     }
   }
 
+  // UPDATE NOTICE
   Future<void> updateNotice({
     required int noticeId,
     required String noticeText,
     required int societyId,
+    File? imageFile,
   }) async {
     try {
-      await supabase
-          .from('notice')
-          .update({'notice': noticeText})
-          .eq('id', noticeId);
+      String? imageUrl;
+      if (imageFile != null) {
+        imageUrl = await uploadNoticeImage(imageFile);
+      }
+
+      final updateData = {'notice': noticeText};
+      if (imageUrl != null) updateData['image'] = imageUrl;
+
+      await supabase.from('notice').update(updateData).eq('id', noticeId);
 
       await getNotices(societyId);
     } catch (e) {
       debugPrint("Error updating notice: $e");
+    }
+  }
+
+  // UPLOAD IMAGE TO SUPABASE
+  Future<String?> uploadNoticeImage(File imageFile) async {
+    try {
+      final ext = imageFile.path.split('.').last;
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.$ext';
+      final bytes = await imageFile.readAsBytes();
+
+      await supabase.storage
+          .from('notice')
+          .uploadBinary(
+            fileName,
+            bytes,
+            fileOptions: const FileOptions(contentType: 'image/*'),
+          );
+
+      final url = supabase.storage.from('notice').getPublicUrl(fileName);
+      return url;
+    } catch (e) {
+      debugPrint("Error uploading notice image: $e");
+      return null;
     }
   }
 }

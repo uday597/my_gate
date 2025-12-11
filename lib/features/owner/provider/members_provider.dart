@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/owner/modal/members_modal.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -11,7 +10,6 @@ class MembersProvider extends ChangeNotifier {
   Future<void> fatchMembersList(int societyId) async {
     try {
       isLoading = true;
-      notifyListeners();
       final response = await supabase
           .from('members')
           .select()
