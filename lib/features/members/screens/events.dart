@@ -143,6 +143,7 @@ class _EventsSectionState extends State<EventsSection> {
     EventResponseProvider responseProv,
     MembersProvider membersProv,
   ) {
+    final isCurrentUserOwner = event.memberId == widget.member.id;
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -185,7 +186,12 @@ class _EventsSectionState extends State<EventsSection> {
               ],
             ),
             SizedBox(height: 6),
-            _buildEventHeader(event, eventProv, membersProv),
+            _buildEventHeader(
+              event,
+              eventProv,
+              membersProv,
+              isCurrentUserOwner,
+            ),
             const SizedBox(height: 12),
             _buildEventContent(event),
             if (event.memberId == widget.member.id) ...[
@@ -261,6 +267,7 @@ class _EventsSectionState extends State<EventsSection> {
     EventsModal event,
     EventProvider eventProv,
     MembersProvider membersProv,
+    bool isCurrentUserOwner,
   ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,7 +278,8 @@ class _EventsSectionState extends State<EventsSection> {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ),
-        _buildVisibilityMenu(event, eventProv, membersProv),
+        if (isCurrentUserOwner)
+          _buildVisibilityMenu(event, eventProv, membersProv),
       ],
     );
   }
