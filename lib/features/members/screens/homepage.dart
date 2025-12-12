@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_gate_clone/features/members/screens/complaints.dart';
+import 'package:my_gate_clone/features/members/screens/events.dart';
 import 'package:my_gate_clone/features/members/screens/guest_request.dart';
 import 'package:my_gate_clone/features/members/screens/help_requestscreen.dart';
 import 'package:my_gate_clone/features/members/screens/new_visitors.dart';
@@ -228,9 +230,20 @@ class MemberHomepage extends StatelessWidget {
                   color: const Color(0xFF4299E1),
                 ),
                 _buildActionButton(
-                  icon: Icons.support_agent,
-                  title: "Support",
+                  icon: Icons.emergency,
+                  title: "Complaints",
                   color: const Color(0xFF0BC5EA),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddComplaintScreen(
+                          memberId: member.id,
+                          societyId: member.societyId,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 _buildActionButton(
                   icon: Icons.logout,
@@ -245,17 +258,10 @@ class MemberHomepage extends StatelessWidget {
                 ),
               ],
             ),
+            Padding(padding: const EdgeInsets.all(20.0), child: Divider()),
+            const SizedBox(height: 20),
 
-            const SizedBox(height: 20),
-            Text(
-              'Events',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF2D3748),
-              ),
-            ),
-            const SizedBox(height: 20),
+            EventsSection(member: member),
           ],
         ),
       ),

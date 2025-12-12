@@ -4,11 +4,12 @@ class EventsModal {
   final String description;
   final String? image;
   final int societyId;
-  final int memberId; // who posted
+  final int memberId;
   final String visibility; // 'public' or 'selective'
-  final String?
-  visibleTo; // comma-separated member IDs for selective visibility
+  final String? visibleTo; // comma-separated member IDs
   final DateTime createdAt;
+  final String memberName;
+  final String memberImage;
   final DateTime updatedAt;
 
   EventsModal({
@@ -18,33 +19,34 @@ class EventsModal {
     this.image,
     required this.societyId,
     required this.memberId,
-    required this.visibility,
+    this.visibility = 'public',
     this.visibleTo,
+    required this.memberName,
+    required this.memberImage,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  factory EventsModal.fromMap(Map<String, dynamic> map) {
+  factory EventsModal.fromMap(Map<String, dynamic> data) {
     return EventsModal(
-      id: map['id'] ?? 0,
-      title: map['title'] ?? '',
-      description: map['description'] ?? '',
-      image: map['image'],
-      societyId: map['society_id'] ?? 0,
-      memberId: map['member_id'] ?? 0,
-      visibility: map['visibility'] ?? 'public',
-      visibleTo: map['visible_to'],
-      createdAt: map['created_at'] != null
-          ? DateTime.parse(map['created_at'])
-          : DateTime.now(),
-      updatedAt: map['updated_at'] != null
-          ? DateTime.parse(map['updated_at'])
-          : DateTime.now(),
+      id: data['id'],
+      title: data['title'],
+      description: data['description'],
+      image: data['image'],
+      societyId: data['society_id'],
+      memberId: data['member_id'],
+      visibility: data['visibility'] ?? 'public',
+      visibleTo: data['visible_to'],
+      memberName: data['members']?['member_name'] ?? 'Member',
+      memberImage: data['members']?['profile_image'] ?? '',
+      createdAt: DateTime.parse(data['created_at']),
+      updatedAt: DateTime.parse(data['updated_at']),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'title': title,
       'description': description,
       'image': image,
@@ -55,5 +57,14 @@ class EventsModal {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
+  }
+
+  List<int> get selectedMemberIds {
+    if (visibleTo == null || visibleTo!.isEmpty) return [];
+    return visibleTo!
+        .split(',')
+        .map((e) => int.tryParse(e))
+        .whereType<int>()
+        .toList();
   }
 }

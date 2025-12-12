@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/admin/modal/society.dart';
 import 'package:my_gate_clone/features/owner/screens/add_members.dart';
 import 'package:my_gate_clone/features/owner/screens/add_securityGuard.dart';
+import 'package:my_gate_clone/features/owner/screens/complaints.dart';
 import 'package:my_gate_clone/features/owner/screens/guard_list.dart';
 import 'package:my_gate_clone/features/owner/screens/members_list.dart';
 import 'package:my_gate_clone/features/owner/screens/notice.dart';
@@ -66,7 +67,7 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
       {
         'title': 'Complaints',
         'icon': Icons.edit_document,
-        'screen': Notice(socityId: widget.owner.id),
+        'screen': ComplaintsRequests(socityId: widget.owner.id),
         'color': Colors.teal,
       },
       {

@@ -1,10 +1,13 @@
 class EventResponseModal {
   final int id;
   final int eventId;
-  final int memberId; // who responded
-  final String type; // 'like' or 'comment'
+  final int memberId;
+  final String type;
   final String? comment;
   final DateTime createdAt;
+
+  final String memberName;
+  final String? memberImage;
 
   EventResponseModal({
     required this.id,
@@ -13,28 +16,33 @@ class EventResponseModal {
     required this.type,
     this.comment,
     required this.createdAt,
+    required this.memberName,
+    this.memberImage,
   });
 
-  factory EventResponseModal.fromMap(Map<String, dynamic> map) {
+  factory EventResponseModal.fromMap(Map<String, dynamic> data) {
     return EventResponseModal(
-      id: map['id'] ?? 0,
-      eventId: map['event_id'] ?? 0,
-      memberId: map['member_id'] ?? 0,
-      type: map['type'] ?? 'like',
-      comment: map['comment'],
-      createdAt: map['created_at'] != null
-          ? DateTime.parse(map['created_at'])
-          : DateTime.now(),
+      id: data['id'],
+      eventId: data['event_id'],
+      memberId: data['member_id'],
+      type: data['type'],
+      comment: data['comment'],
+      createdAt: DateTime.parse(data['created_at']),
+      memberName: data['members']?['member_name'] ?? 'Member',
+      memberImage: data['members']?['profile_image'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'event_id': eventId,
       'member_id': memberId,
       'type': type,
       'comment': comment,
       'created_at': createdAt.toIso8601String(),
+      'member_name': memberName,
+      'profile_image': memberImage,
     };
   }
 }
