@@ -92,8 +92,21 @@ class _AddVisitorScreenState extends State<AddVisitorScreen> {
                         items: membersProvider.members.map((member) {
                           return DropdownMenuItem(
                             value: member,
-                            child: Text(
-                              '${member.memberName} (${member.memberFlatNo})',
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(member.memberName),
+                                const SizedBox(width: 10),
+                                Icon(
+                                  Icons.home,
+                                  size: 18,
+                                  color: Colors.grey.shade600,
+                                ),
+                                Text(
+                                  member.memberFlatNo,
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                              ],
                             ),
                           );
                         }).toList(),

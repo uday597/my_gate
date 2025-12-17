@@ -14,6 +14,18 @@ class GuardHomepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+
+    // simple breakpoints
+    final bool isTablet = width >= 600; // you can adjust this [web:65]
+
+    final int crossAxisCount = isTablet ? 3 : 2;
+    final double childAspectRatio = isTablet ? 1.2 : 0.9;
+    final EdgeInsets pagePadding = EdgeInsets.all(isTablet ? 24 : 20);
+    final double avatarRadius = isTablet ? 40 : 35;
+    final double nameFontSize = isTablet ? 22 : 20;
+
     return Scaffold(
       appBar: reuseAppBar(
         title: "Guard Dashboard",
@@ -21,12 +33,12 @@ class GuardHomepage extends StatelessWidget {
         centerTittle: true,
       ),
       backgroundColor: Colors.white,
-
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: pagePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // top card
             GestureDetector(
               onTap: () => showGuardInfo(context),
               child: Card(
@@ -36,11 +48,11 @@ class GuardHomepage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(18),
+                  padding: EdgeInsets.all(isTablet ? 22 : 18),
                   child: Row(
                     children: [
                       CircleAvatar(
-                        radius: 35,
+                        radius: avatarRadius,
                         backgroundImage: guard.profileImage != null
                             ? NetworkImage(guard.profileImage!)
                             : const AssetImage("assets/images/guard.png")
@@ -53,8 +65,8 @@ class GuardHomepage extends StatelessWidget {
                           children: [
                             Text(
                               guard.name,
-                              style: const TextStyle(
-                                fontSize: 20,
+                              style: TextStyle(
+                                fontSize: nameFontSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -81,80 +93,90 @@ class GuardHomepage extends StatelessWidget {
               "Quick Actions",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-
             const SizedBox(height: 15),
 
-            GridView.count(
-              crossAxisCount: 2,
+            GridView.builder(
+              itemCount: 5,
               shrinkWrap: true,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15,
               physics: const NeverScrollableScrollPhysics(),
-              children: [
-                buildMenuButton(
-                  icon: Icons.group,
-                  title: "Visitors List",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            VisitorsList(societyId: guard.societyId),
-                      ),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                childAspectRatio: childAspectRatio,
+              ), // tablet vs mobile grid [web:79][web:81]
+              itemBuilder: (context, index) {
+                switch (index) {
+                  case 0:
+                    return buildMenuButton(
+                      icon: Icons.group,
+                      title: "Visitors List",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                VisitorsList(societyId: guard.societyId),
+                          ),
+                        );
+                      },
                     );
-                  },
-                ),
-                buildMenuButton(
-                  icon: Icons.group_add,
-                  title: "New Visitor",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddVisitorScreen(
-                          societyId: guard.societyId,
-                          guardId: guard.id,
-                        ),
-                      ),
+                  case 1:
+                    return buildMenuButton(
+                      icon: Icons.group_add,
+                      title: "New Visitor",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddVisitorScreen(
+                              societyId: guard.societyId,
+                              guardId: guard.id,
+                            ),
+                          ),
+                        );
+                      },
                     );
-                  },
-                ),
-                buildMenuButton(
-                  icon: Icons.qr_code_scanner,
-                  title: "Scan QR",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => GuardQRScannerScreen(),
-                      ),
+                  case 2:
+                    return buildMenuButton(
+                      icon: Icons.qr_code_scanner,
+                      title: "Scan QR",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GuardQRScannerScreen(),
+                          ),
+                        );
+                      },
                     );
-                  },
-                ),
-                buildMenuButton(
-                  icon: Icons.phone,
-                  title: "Contact us",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ContactUs(societyId: guard.societyId),
-                      ),
+                  case 3:
+                    return buildMenuButton(
+                      icon: Icons.phone,
+                      title: "Contact us",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ContactUs(societyId: guard.societyId),
+                          ),
+                        );
+                      },
                     );
-                  },
-                ),
-                buildMenuButton(
-                  icon: Icons.logout,
-                  title: "Logout",
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text("Logged Out")));
-                  },
-                ),
-              ],
+                  default:
+                    return buildMenuButton(
+                      icon: Icons.logout,
+                      title: "Logout",
+                      onTap: () {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Logged Out")),
+                        );
+                      },
+                    );
+                }
+              },
             ),
           ],
         ),
@@ -162,7 +184,6 @@ class GuardHomepage extends StatelessWidget {
     );
   }
 
-  /// POPUP UI FOR MORE INFORMATION
   void showGuardInfo(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: Colors.white,
@@ -206,7 +227,7 @@ class GuardHomepage extends StatelessWidget {
 
               infoTile("Phone Number", guard.phone),
               infoTile("Address", guard.address),
-              infoTile("Society ID", guard.societyId.toString()),
+              infoTile("Adhaar no", guard.idProof.toString()),
               infoTile(
                 "Joined On",
                 guard.createdAt != null

@@ -71,7 +71,7 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
         idProof: idProofCtrl.text.trim(),
         gender: selectedGender ?? "",
         profileImage: imageUrl,
-        createdAt: null,
+        createdAt: DateTime.now().toIso8601String(),
       );
 
       debugPrint("Attempting to save guard: ${guard.toMap()}");
@@ -190,13 +190,13 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
                 Icon(
                   Icons.camera_alt,
                   size: 18,
-                  color: _isLoading ? Colors.grey : Colors.blue,
+                  color: _isLoading ? Colors.grey : Color(0xFF4286F4),
                 ),
                 const SizedBox(width: 6),
                 Text(
                   "Upload Photo",
                   style: TextStyle(
-                    color: _isLoading ? Colors.grey : Colors.blue,
+                    color: _isLoading ? Colors.grey : Color(0xFF4286F4),
                     fontSize: 14,
                   ),
                 ),
@@ -255,7 +255,7 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
 
               _inputField(
                 controller: idProofCtrl,
-                label: "ID Proof Number(adhaar/pan/etc)",
+                label: "Adhaar Card Number",
                 icon: Icons.badge,
                 enabled: !_isLoading,
                 validator: (v) => v!.isEmpty ? "Enter ID Proof Number" : null,
@@ -285,7 +285,10 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
         keyboardType: keyboardType,
         validator: validator,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: enabled ? Colors.blue : Colors.grey),
+          prefixIcon: Icon(
+            icon,
+            color: enabled ? Color(0xFF4286F4) : Colors.grey,
+          ),
           labelText: label,
           filled: true,
           fillColor: enabled ? Colors.grey.shade100 : Colors.grey.shade200,
@@ -295,7 +298,7 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: Colors.blue),
+            borderSide: const BorderSide(color: Color(0xFF4286F4)),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),

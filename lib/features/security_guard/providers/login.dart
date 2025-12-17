@@ -13,7 +13,7 @@ class SecurityGuardLoginProvider extends ChangeNotifier {
 
       final response = await supabase
           .from('security_guard')
-          .select()
+          .select('''*,societies:society_id(society_name)''')
           .eq('phone', phone)
           .maybeSingle();
 

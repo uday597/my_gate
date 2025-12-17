@@ -80,7 +80,7 @@ class _MemberServiceProvidersScreenState
                       child: ChoiceChip(
                         label: Text(category),
                         selected: isSelected,
-                        selectedColor: Colors.lightBlue,
+                        selectedColor: const Color.fromARGB(255, 61, 81, 114),
                         backgroundColor: Colors.grey.shade200,
                         labelStyle: TextStyle(
                           color: isSelected ? Colors.white : Colors.black87,
@@ -117,8 +117,8 @@ class _MemberServiceProvidersScreenState
                                 borderRadius: BorderRadius.circular(16),
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.lightBlue,
-                                    Colors.yellow.shade100,
+                                    Color(0xFF373B44), // dark indigo
+                                    Color(0xFF4286F4),
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -255,7 +255,13 @@ class _MemberServiceProvidersScreenState
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Icon(icon, color: Colors.blueAccent),
+          Icon(
+            icon,
+            color: // dark indigo
+            Color(
+              0xFF4286F4,
+            ),
+          ),
           const SizedBox(width: 10),
           Text("$title: ", style: const TextStyle(fontWeight: FontWeight.bold)),
           Expanded(child: Text(value)),

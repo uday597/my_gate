@@ -46,8 +46,8 @@ class _ContactUsState extends State<ContactUs> {
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xFFB3E5FC), // lighter blue
-                    Color(0xFFFFF9C4),
+                    Color(0xFF373B44), // dark indigo
+                    Color(0xFF4286F4),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -69,7 +69,7 @@ class _ContactUsState extends State<ContactUs> {
                     data.societyName,
                     style: const TextStyle(
                       fontSize: 24,
-                      color: Colors.black87,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
                     ),
@@ -77,7 +77,7 @@ class _ContactUsState extends State<ContactUs> {
                   const SizedBox(height: 5),
                   const Text(
                     "Get in touch with us",
-                    style: TextStyle(color: Colors.black54),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ],
               ),

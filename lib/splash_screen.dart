@@ -33,14 +33,17 @@ class _SplashScreenState extends State<SplashScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.lightBlueAccent, Colors.yellow],
+            colors: [
+              Color(0xFF373B44), // dark indigo
+              Color(0xFF4286F4),
+            ],
           ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "My Gate",
+              "SmartDwaar",
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w900,

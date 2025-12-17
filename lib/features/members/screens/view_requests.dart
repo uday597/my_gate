@@ -27,7 +27,7 @@ class _GuestRequestListScreenState extends State<GuestRequestListScreen> {
     Provider.of<RequestProvider>(
       context,
       listen: false,
-    ).fetchRequests(widget.memberId);
+    ).fetchRequestsForMembers(widget.memberId);
   }
 
   @override

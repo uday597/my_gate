@@ -245,11 +245,14 @@ class _HelpRequestListScreenState extends State<HelpRequestListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.black87,
+        foregroundColor: Colors.white,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFB3E5FC), Color(0xFFFFF9C4)],
+              colors: [
+                Color(0xFF373B44), // dark indigo
+                Color(0xFF4286F4),
+              ],
             ),
           ),
         ),

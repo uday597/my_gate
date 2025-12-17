@@ -10,105 +10,147 @@ class RoleScreen extends StatefulWidget {
 class _RoleScreenState extends State<RoleScreen> {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size; // screen size [web:6]
+    final width = size.width;
+
+    // breakpoints
+    int crossAxisCount;
+    double titleFontSize;
+    double cardAspectRatio;
+    EdgeInsets gridPadding;
+
+    if (width < 600) {
+      // mobile
+      crossAxisCount = 2;
+      titleFontSize = 26;
+      cardAspectRatio = 0.85;
+      gridPadding = const EdgeInsets.symmetric(horizontal: 16, vertical: 24);
+    } else if (width < 900) {
+      // small tablet
+      crossAxisCount = 3;
+      titleFontSize = 30;
+      cardAspectRatio = 0.9;
+      gridPadding = const EdgeInsets.symmetric(horizontal: 40, vertical: 32);
+    } else {
+      // large tablet / web
+      crossAxisCount = 4;
+      titleFontSize = 32;
+      cardAspectRatio = 1.0;
+      gridPadding = const EdgeInsets.symmetric(horizontal: 80, vertical: 40);
+    }
+
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.lightBlueAccent, Colors.yellow],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF373B44), // dark indigo
+              Color(0xFF4286F4), // green,
+            ],
+            stops: [0.0, 0.5],
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 50),
-              const Text(
-                "Select Your Role",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black54,
-                      blurRadius: 6,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
+        child: SafeArea(
+          child: Padding(
+            padding: gridPadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 16),
+                Text(
+                  "Select Your Role",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: titleFontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 1.1,
+                    shadows: const [
+                      Shadow(
+                        color: Colors.black45,
+                        blurRadius: 8,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 30),
-
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 0.85,
-                  children: [
-                    roleCard("Admin", "assets/images/admin.png", () {
-                      Navigator.pushNamed(context, '/addsociety');
-                    }),
-                    roleCard("Secretary", "assets/images/owner.png", () {
-                      Navigator.pushNamed(context, '/ownerlogin');
-                    }),
-                    roleCard("Members", "assets/images/members.png", () {
-                      Navigator.pushNamed(context, '/memberlogin');
-                    }),
-                    roleCard(
-                      "Security Guard",
-                      "assets/images/security.png",
-                      () {
-                        Navigator.pushNamed(context, '/guardlogin');
-                      },
-                    ),
-                  ],
+                const SizedBox(height: 32),
+                Expanded(
+                  child: GridView.count(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    childAspectRatio: cardAspectRatio,
+                    children: [
+                      roleCard("Admin", "assets/images/admin.png", () {
+                        Navigator.pushNamed(context, '/addsociety');
+                      }),
+                      roleCard("Secretary", "assets/images/owner.png", () {
+                        Navigator.pushNamed(context, '/ownerlogin');
+                      }),
+                      roleCard("Members", "assets/images/members.png", () {
+                        Navigator.pushNamed(context, '/memberlogin');
+                      }),
+                      roleCard(
+                        "Security Guard",
+                        "assets/images/security.png",
+                        () {
+                          Navigator.pushNamed(context, '/guardlogin');
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // Role Card Widget
-  Widget roleCard(String title, String imagePath, VoidCallback? ontap) {
-    return GestureDetector(
-      onTap: ontap,
+  Widget roleCard(String title, String imagePath, VoidCallback? onTap) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(24),
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.85),
-          borderRadius: BorderRadius.circular(20),
+          // new card background, slightly tinted with gradient overlay [web:7][web:10]
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFFFFFFF), Color(0xFFE3F2FD)],
+          ),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: const [
             BoxShadow(
               color: Colors.black26,
-              blurRadius: 6,
+              blurRadius: 10,
               spreadRadius: 1,
-              offset: Offset(2, 3),
+              offset: Offset(0, 4),
             ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(imagePath, height: 80, width: 80, fit: BoxFit.contain),
-
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Image.asset(imagePath, height: 80, fit: BoxFit.contain),
+              ),
+            ),
             const SizedBox(height: 12),
-
             Text(
               title,
               style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1A237E),
               ),
             ),
           ],

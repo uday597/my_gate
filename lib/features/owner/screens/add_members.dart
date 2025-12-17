@@ -75,7 +75,7 @@ class _AddMembersState extends State<AddMembers> {
                 onTap: pickImage,
                 child: CircleAvatar(
                   radius: 60,
-                  backgroundColor: Colors.lightBlueAccent.shade100,
+                  backgroundColor: Color(0xFF4286F4),
                   backgroundImage: pickedImage != null
                       ? FileImage(pickedImage!)
                       : null,
@@ -173,7 +173,7 @@ class _AddMembersState extends State<AddMembers> {
                   decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.person_outline,
-                      color: Colors.lightBlueAccent,
+                      color: Color(0xFF4286F4),
                     ),
                     labelText: "Gender",
                     filled: true,
@@ -256,12 +256,12 @@ class _AddMembersState extends State<AddMembers> {
                 height: 50,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlueAccent,
+                    backgroundColor: Color(0xFF4286F4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  icon: const Icon(Icons.add, color: Colors.white),
+                  icon: const Icon(Icons.add, color: Color(0xFF4286F4)),
                   label: const Text(
                     "Add Member",
                     style: TextStyle(fontSize: 18, color: Colors.white),
@@ -352,7 +352,7 @@ class _AddMembersState extends State<AddMembers> {
         keyboardType: keyboardType,
         validator: validator,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.lightBlueAccent),
+          prefixIcon: Icon(icon, color: Color(0xFF4286F4)),
           labelText: label,
           filled: true,
           fillColor: Colors.grey.shade100,

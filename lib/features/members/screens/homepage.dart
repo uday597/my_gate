@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/members/screens/complaints.dart';
+import 'package:my_gate_clone/features/members/screens/emergency_alerts.dart';
 import 'package:my_gate_clone/features/members/screens/events.dart';
 import 'package:my_gate_clone/features/members/screens/guest_request.dart';
 import 'package:my_gate_clone/features/members/screens/help_requestscreen.dart';
 import 'package:my_gate_clone/features/members/screens/new_visitors.dart';
 import 'package:my_gate_clone/features/members/screens/notice.dart';
+import 'package:my_gate_clone/features/members/screens/notifications.dart';
 import 'package:my_gate_clone/features/members/screens/service_providers.dart';
 import 'package:my_gate_clone/features/members/screens/view_requests.dart';
 import 'package:my_gate_clone/features/owner/modal/members_modal.dart';
@@ -17,27 +19,54 @@ class MemberHomepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+
+    // breakpoints
+    final bool isTablet = width >= 600; // can tweak later [web:65]
+
+    // layout values
+    final int crossAxisCount = isTablet ? 4 : 3;
+    final double childAspectRatio = isTablet ? 1.1 : 0.85;
+    final EdgeInsets pagePadding = EdgeInsets.all(isTablet ? 24 : 16);
+    final double headerAvatarRadius = isTablet ? 40 : 35;
+    final double headerTextSize = isTablet ? 22 : 20;
+    final double headerPadding = isTablet ? 24 : 20;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: reuseAppBar(
         title: "Member Dashboard",
         showBack: false,
         centerTittle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MemberNotificationsScreen(),
+                ),
+              );
+            },
+            icon: Icon(Icons.notifications),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: pagePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //profile header
+            // profile header
             GestureDetector(
               onTap: () => showMemberInfo(context),
               child: Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFFB3E5FC), // lighter blue
-                      Color(0xFFFFF9C4),
+                      Color(0xFF373B44), // dark indigo
+                      Color(0xFF4286F4),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -52,14 +81,14 @@ class MemberHomepage extends StatelessWidget {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(headerPadding),
                   child: Row(
                     children: [
                       CircleAvatar(
-                        radius: 35,
+                        radius: headerAvatarRadius,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
-                          radius: 32,
+                          radius: headerAvatarRadius - 3,
                           backgroundImage:
                               member.memberImage != null &&
                                   member.memberImage!.isNotEmpty
@@ -69,17 +98,16 @@ class MemberHomepage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               "Hello, ${member.memberName.split(' ').first}",
-                              style: const TextStyle(
-                                fontSize: 20,
+                              style: TextStyle(
+                                fontSize: headerTextSize,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black87,
+                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -87,7 +115,7 @@ class MemberHomepage extends StatelessWidget {
                               "Flat No: ${member.memberFlatNo}",
                               style: const TextStyle(
                                 fontSize: 14,
-                                color: Colors.black54,
+                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -112,7 +140,11 @@ class MemberHomepage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Icon(Icons.arrow_forward_ios, size: 20),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20,
+                        color: Colors.white,
+                      ),
                     ],
                   ),
                 ),
@@ -120,9 +152,6 @@ class MemberHomepage extends StatelessWidget {
             ),
 
             const SizedBox(height: 24),
-
-            const SizedBox(height: 12),
-
             const Text(
               "Quick Actions",
               style: TextStyle(
@@ -131,15 +160,17 @@ class MemberHomepage extends StatelessWidget {
                 color: Color(0xFF2D3748),
               ),
             ),
-
             const SizedBox(height: 16),
 
+            // responsive grid
             GridView.count(
-              crossAxisCount: 3,
+              crossAxisCount: crossAxisCount,
               shrinkWrap: true,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
               physics: const NeverScrollableScrollPhysics(),
+              childAspectRatio:
+                  childAspectRatio, // key for tablet layout [web:5]
               children: [
                 _buildActionButton(
                   icon: Icons.handshake_rounded,
@@ -183,7 +214,7 @@ class MemberHomepage extends StatelessWidget {
                 _buildActionButton(
                   icon: Icons.list_alt,
                   title: "Services",
-                  color: const Color(0xFFED2936),
+                  color: Colors.blue,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -223,11 +254,36 @@ class MemberHomepage extends StatelessWidget {
                     );
                   },
                 ),
-
                 _buildActionButton(
-                  icon: Icons.payments_outlined,
+                  icon: Icons.add_alert_sharp,
+                  title: "Emergency Alerts",
+                  color: Colors.red,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MemberEmergencyAlertsList(
+                          societyId: member.societyId,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                _buildActionButton(
+                  icon: Icons.currency_rupee_rounded,
                   title: "Payments",
-                  color: const Color(0xFF4299E1),
+                  color: const Color.fromARGB(255, 35, 153, 20),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddComplaintScreen(
+                          memberId: member.id,
+                          societyId: member.societyId,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 _buildActionButton(
                   icon: Icons.emergency,
@@ -258,7 +314,9 @@ class MemberHomepage extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(padding: const EdgeInsets.all(20.0), child: Divider()),
+
+            const SizedBox(height: 20),
+            const Divider(),
             const SizedBox(height: 20),
 
             EventsSection(member: member),

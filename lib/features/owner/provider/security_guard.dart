@@ -14,7 +14,7 @@ class SecurityGuardProvider with ChangeNotifier {
     try {
       final response = await supabase
           .from('security_guard')
-          .select()
+          .select('*, societies:society_id(society_name)')
           .eq('society_id', societyId)
           .order('id', ascending: false);
 

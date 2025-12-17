@@ -3,6 +3,7 @@ import 'package:my_gate_clone/features/admin/modal/society.dart';
 import 'package:my_gate_clone/features/owner/screens/add_members.dart';
 import 'package:my_gate_clone/features/owner/screens/add_securityGuard.dart';
 import 'package:my_gate_clone/features/owner/screens/complaints.dart';
+import 'package:my_gate_clone/features/owner/screens/emergancy_alert.dart';
 import 'package:my_gate_clone/features/owner/screens/guard_list.dart';
 import 'package:my_gate_clone/features/owner/screens/members_list.dart';
 import 'package:my_gate_clone/features/owner/screens/notice.dart';
@@ -20,8 +21,20 @@ class OwnerHomepage extends StatefulWidget {
 class _OwnerHomepageState extends State<OwnerHomepage> {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width; // screen width [web:65]
+
+    // breakpoints
+    final bool isTablet = width >= 600; // you can tweak 600 as needed [web:65]
+
+    // grid config
+    final int crossAxisCount = isTablet ? 4 : 3;
+    final double childAspectRatio = isTablet ? 1.1 : 0.85;
+    final EdgeInsets pagePadding = EdgeInsets.symmetric(
+      horizontal: isTablet ? 24 : 16,
+      vertical: isTablet ? 24 : 16,
+    );
+
     final List<Map<String, dynamic>> features = [
-      //owner id basically society id hi hai
       {
         'title': 'Add Members',
         'icon': Icons.group_add,
@@ -59,12 +72,6 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
         'color': const Color(0xFF9F7AEA),
       },
       {
-        'title': 'Payments',
-        'icon': Icons.payments,
-        'screen': Notice(socityId: widget.owner.id),
-        'color': Colors.yellow,
-      },
-      {
         'title': 'Complaints',
         'icon': Icons.edit_document,
         'screen': ComplaintsRequests(socityId: widget.owner.id),
@@ -73,7 +80,7 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
       {
         'title': 'Emergency Alerts',
         'icon': Icons.add_alert,
-        'screen': Notice(socityId: widget.owner.id),
+        'screen': EmergencyAlertsScreen(socityId: widget.owner.id),
         'color': Colors.red,
       },
     ];
@@ -85,9 +92,8 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
         centerTittle: true,
       ),
       backgroundColor: const Color(0xFFF8F9FA),
-
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: pagePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -96,7 +102,7 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
               child: Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFB3E5FC), Color(0xFFFFF9C4)],
+                    colors: [Color(0xFF373B44), Color(0xFF4286F4)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -109,11 +115,14 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(isTablet ? 24 : 20),
                 child: Row(
+                  crossAxisAlignment: isTablet
+                      ? CrossAxisAlignment.center
+                      : CrossAxisAlignment.start,
                   children: [
                     CircleAvatar(
-                      radius: 35,
+                      radius: isTablet ? 40 : 35,
                       backgroundColor: Colors.white,
                       child: const Icon(
                         Icons.apartment,
@@ -122,25 +131,24 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
                       ),
                     ),
                     const SizedBox(width: 16),
-
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             widget.owner.ownerName,
-                            style: const TextStyle(
-                              fontSize: 20,
+                            style: TextStyle(
+                              fontSize: isTablet ? 22 : 20,
                               fontWeight: FontWeight.w700,
-                              color: Colors.black87,
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             widget.owner.societyName,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black54,
+                            style: TextStyle(
+                              fontSize: isTablet ? 15 : 14,
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 6),
@@ -164,8 +172,11 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
                         ],
                       ),
                     ),
-
-                    const Icon(Icons.arrow_forward_ios, size: 20),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ],
                 ),
               ),
@@ -187,11 +198,11 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
               itemCount: features.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
-                childAspectRatio: 0.85,
+                childAspectRatio: childAspectRatio,
               ),
               itemBuilder: (context, index) {
                 final item = features[index];
@@ -250,14 +261,17 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
               child: Icon(icon, size: 26, color: color),
             ),
             const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF4A5568),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF4A5568),
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),

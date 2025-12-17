@@ -12,7 +12,7 @@ PreferredSizeWidget reuseAppBar({
     automaticallyImplyLeading: showBack,
     leading: showBack ? null : const SizedBox.shrink(),
     elevation: 0,
-    foregroundColor: Colors.black87,
+    foregroundColor: Colors.white,
 
     title: Text(
       title,
@@ -29,7 +29,10 @@ PreferredSizeWidget reuseAppBar({
     flexibleSpace: Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFB3E5FC), Color(0xFFFFF9C4)],
+          colors: [
+            Color(0xFF373B44), // dark indigo
+            Color(0xFF4286F4),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

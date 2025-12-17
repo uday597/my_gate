@@ -101,7 +101,7 @@ class _AddComplaintScreenState extends State<AddComplaintScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: reuseAppBar(title: "Add Complaint"),
-
+      backgroundColor: Colors.white,
       body: Consumer<ComplaintsProvider>(
         builder: (context, provider, _) {
           return SingleChildScrollView(

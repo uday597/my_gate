@@ -166,7 +166,7 @@ class _EditMemberInfoState extends State<EditMemberInfo> {
                                 child: Icon(
                                   Icons.edit,
                                   size: 18,
-                                  color: Colors.blue,
+                                  color: Color(0xFF4286F4),
                                 ),
                               ),
                             ),
@@ -239,7 +239,7 @@ class _EditMemberInfoState extends State<EditMemberInfo> {
                                 decoration: InputDecoration(
                                   prefixIcon: Icon(
                                     Icons.person_outline,
-                                    color: Colors.blue,
+                                    color: Color(0xFF4286F4),
                                   ),
                                   labelText: "Gender",
                                   filled: true,
@@ -332,7 +332,7 @@ class _EditMemberInfoState extends State<EditMemberInfo> {
                             onPressed: updateMember,
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Color(0xFF4286F4),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),

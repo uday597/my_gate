@@ -8,6 +8,7 @@ class GuestRequest {
   final String? guestImage;
   final String? qrCode;
   final String? memberName;
+  final String? memberFlatNo;
   final String? request_type;
 
   final DateTime createdAt;
@@ -18,6 +19,7 @@ class GuestRequest {
   GuestRequest({
     required this.id,
     this.memberName,
+    this.memberFlatNo,
     required this.societyId,
     required this.memberId,
     required this.guestName,
@@ -39,6 +41,8 @@ class GuestRequest {
       memberId: map['member_id'],
       request_type: map['request_type'],
       memberName: map['members']?['member_name'] ?? 'Unknown',
+      memberFlatNo: map['members']?['flat_no'] ?? 'no data',
+
       guestName: map['guest_name'],
       guestPhone: map['guest_phone'],
       guestAddress: map['guest_address'],

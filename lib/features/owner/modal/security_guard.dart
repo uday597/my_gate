@@ -7,12 +7,14 @@ class SecurityGuardModal {
   final String idProof;
   final String dob;
   final String gender;
+  final String? societyName;
   final String? profileImage;
   final String? createdAt;
 
   SecurityGuardModal({
     required this.id,
     required this.societyId,
+    this.societyName,
     required this.name,
     required this.dob,
     required this.idProof,
@@ -30,6 +32,7 @@ class SecurityGuardModal {
       gender: map['gender'],
       idProof: map['id_proof'],
       societyId: map['society_id'],
+      societyName: map['societies']?['society_name'],
       name: map['name'],
       phone: map['phone'],
       address: map['address'],

@@ -28,7 +28,7 @@ class VisitorModal {
     required this.memberId,
     required this.guardId,
     this.image,
-    required this.createdAt, // NEW
+    required this.createdAt,
   });
 
   VisitorModal copyWith({

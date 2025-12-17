@@ -4,7 +4,6 @@ import 'package:my_gate_clone/features/members/modal/guest_modal.dart';
 import 'package:my_gate_clone/features/members/providers/guest.dart';
 import 'package:my_gate_clone/features/security_guard/modal/visitors.dart';
 import 'package:my_gate_clone/features/security_guard/providers/visitor.dart';
-import 'package:my_gate_clone/utilis/appbar.dart';
 import 'package:provider/provider.dart';
 
 class VisitorsList extends StatefulWidget {
@@ -32,6 +31,28 @@ class _VisitorsListState extends State<VisitorsList> {
     ).fetchVisitors(widget.societyId);
   }
 
+  void resetFilter() {
+    setState(() {
+      selectedFilter = "All";
+      selectedDate = null;
+    });
+  }
+
+  void pickDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+  DateTime? selectedDate;
   @override
   Widget build(BuildContext context) {
     final requestProvider = Provider.of<RequestProvider>(context);
@@ -46,12 +67,46 @@ class _VisitorsListState extends State<VisitorsList> {
     /// Apply filter
     List<dynamic> filteredList = combinedList.where((item) {
       final status = item.status.toLowerCase();
-      if (selectedFilter == "All") return true;
-      return status == selectedFilter.toLowerCase();
+      bool statusMatch =
+          selectedFilter == "All" || status == selectedFilter.toLowerCase();
+      DateTime createdAt = item is VisitorModal
+          ? item.createdAt
+          : (item as GuestRequest).createdAt;
+      bool dateMatch = true;
+      if (selectedDate != null) {
+        dateMatch =
+            createdAt.year == selectedDate!.year &&
+            createdAt.month == selectedDate!.month &&
+            createdAt.day == selectedDate!.day;
+      }
+      return statusMatch && dateMatch;
     }).toList();
 
     return Scaffold(
-      appBar: reuseAppBar(title: 'Visitors List'),
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF373B44), Color(0xFF4286F4)],
+            ),
+          ),
+        ),
+        foregroundColor: Colors.white,
+        title: Text(
+          'Visitors List',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              pickDate();
+            },
+            icon: Icon(Icons.calendar_month),
+          ),
+          IconButton(onPressed: resetFilter, icon: Icon(Icons.refresh)),
+        ],
+      ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -126,22 +181,22 @@ class _VisitorsListState extends State<VisitorsList> {
     );
   }
 
-  /// VISITOR UI CARD
+  /// VISITOR Details method
   Widget visitorCard(dynamic visitor, String? image, String date) {
-    /// GET NAME FIX
     final String name = (visitor is VisitorModal)
         ? visitor.name
         : (visitor as GuestRequest).guestName;
 
-    /// GET PHONE FIX
     final String phone = (visitor is VisitorModal)
         ? visitor.phone
         : (visitor as GuestRequest).guestPhone;
 
-    /// GET FLAT / RELATIVE FIX
-    final String flatOrRelative = (visitor is VisitorModal)
+    final String Relative = (visitor is VisitorModal)
+        ? visitor.relative
+        : (visitor as GuestRequest).memberName.toString();
+    final String flatNo = (visitor is VisitorModal)
         ? visitor.flatNo
-        : (visitor as GuestRequest).guestAddress ?? "N/A";
+        : (visitor as GuestRequest).memberFlatNo.toString();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
@@ -192,6 +247,8 @@ class _VisitorsListState extends State<VisitorsList> {
                 ),
 
                 const SizedBox(height: 4),
+                Row(children: [Text('Relative:$Relative')]),
+                const SizedBox(height: 4),
 
                 /// PHONE
                 Row(
@@ -209,7 +266,7 @@ class _VisitorsListState extends State<VisitorsList> {
                   children: [
                     const Icon(Icons.home, size: 16, color: Colors.grey),
                     const SizedBox(width: 5),
-                    Text(flatOrRelative),
+                    Text(flatNo),
                   ],
                 ),
 

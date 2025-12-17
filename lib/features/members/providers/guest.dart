@@ -182,7 +182,37 @@ class RequestProvider with ChangeNotifier {
     try {
       final response = await supabase
           .from("guest_requests")
-          .select('*, members:member_id(member_name)')
+          .select('*, members:member_id(member_name,flat_no)')
+          .eq("society_id", memberId)
+          .order("id", ascending: false);
+
+      _requests = response.map((e) => GuestRequest.fromMap(e)).toList();
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Fetch Requests Error: $e");
+    }
+  }
+
+  Future<void> fetchRequestsForMebers(int memberId) async {
+    try {
+      final response = await supabase
+          .from("guest_requests")
+          .select('*, members:member_id(member_name,flat_no)')
+          .eq("member_is", memberId)
+          .order("id", ascending: false);
+
+      _requests = response.map((e) => GuestRequest.fromMap(e)).toList();
+      notifyListeners();
+    } catch (e) {
+      debugPrint("Fetch Requests Error: $e");
+    }
+  }
+
+  Future<void> fetchRequestsForMembers(int memberId) async {
+    try {
+      final response = await supabase
+          .from("guest_requests")
+          .select('*, members:member_id(member_name,flat_no)')
           .eq("member_id", memberId)
           .order("id", ascending: false);
 
