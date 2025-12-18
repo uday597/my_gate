@@ -7,6 +7,9 @@ class PaymentModal {
   final String? paymentImage;
   final String status;
   final String createdAt;
+  final String? memberName;
+  final String? memberPhone;
+  final String? flatNo;
 
   PaymentModal({
     required this.id,
@@ -17,6 +20,9 @@ class PaymentModal {
     this.paymentImage,
     required this.status,
     required this.createdAt,
+    this.memberName,
+    this.memberPhone,
+    this.flatNo,
   });
 
   factory PaymentModal.fromMap(Map<String, dynamic> map) {
@@ -29,6 +35,9 @@ class PaymentModal {
       paymentImage: map['payment_image'],
       status: map['status'],
       createdAt: map['created_at'],
+      memberName: map['members']?['member_name'],
+      memberPhone: map['members']?['member_phone'],
+      flatNo: map['members']?['flat_no'],
     );
   }
 

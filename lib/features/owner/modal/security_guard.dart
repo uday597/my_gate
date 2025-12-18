@@ -44,7 +44,6 @@ class SecurityGuardModal {
   Map<String, dynamic> toMap() {
     return {
       'society_id': societyId,
-
       'name': name,
       'phone': phone,
       'address': address,

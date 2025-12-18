@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_gate_clone/features/members/modal/payment.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 class PaymentProvider with ChangeNotifier {
   final supabase = Supabase.instance.client;
 
@@ -20,6 +21,28 @@ class PaymentProvider with ChangeNotifier {
           .from('payments')
           .select('*')
           .eq('member_id', memberId)
+          .order('created_at', ascending: false);
+
+      _payments = response
+          .map<PaymentModal>((e) => PaymentModal.fromMap(e))
+          .toList();
+    } catch (e) {
+      debugPrint('Error fetching payments: $e');
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> getPaymentsAdminSide(int societyId) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      final response = await supabase
+          .from('payments')
+          .select('*,members(member_name,flat_no,member_phone)')
+          .eq('society_id', societyId)
           .order('created_at', ascending: false);
 
       _payments = response
@@ -117,7 +140,9 @@ class PaymentProvider with ChangeNotifier {
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.$ext';
       final bytes = await imageFile.readAsBytes();
 
-      await supabase.storage.from('payment').uploadBinary(
+      await supabase.storage
+          .from('payment')
+          .uploadBinary(
             fileName,
             bytes,
             fileOptions: const FileOptions(contentType: 'image/*'),
@@ -127,6 +152,23 @@ class PaymentProvider with ChangeNotifier {
     } catch (e) {
       debugPrint('Error uploading image: $e');
       return null;
+    }
+  }
+
+  Future<void> updatePaymentStatus({
+    required int paymentId,
+    required String status, // approved / rejected
+    required int societyId,
+  }) async {
+    try {
+      await supabase
+          .from('payments')
+          .update({'status': status})
+          .eq('id', paymentId);
+
+      await getPaymentsAdminSide(societyId);
+    } catch (e) {
+      debugPrint('Error updating payment status: $e');
     }
   }
 }

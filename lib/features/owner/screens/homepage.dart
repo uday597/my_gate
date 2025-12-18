@@ -7,6 +7,7 @@ import 'package:my_gate_clone/features/owner/screens/emergancy_alert.dart';
 import 'package:my_gate_clone/features/owner/screens/guard_list.dart';
 import 'package:my_gate_clone/features/owner/screens/members_list.dart';
 import 'package:my_gate_clone/features/owner/screens/notice.dart';
+import 'package:my_gate_clone/features/owner/screens/payments.dart';
 import 'package:my_gate_clone/features/owner/screens/service_provider.dart';
 import 'package:my_gate_clone/utilis/appbar.dart';
 
@@ -82,6 +83,12 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
         'icon': Icons.add_alert,
         'screen': EmergencyAlertsScreen(socityId: widget.owner.id),
         'color': Colors.red,
+      },
+      {
+        'title': 'Payments',
+        'icon': Icons.currency_rupee,
+        'screen': AdminSidePayment(societyId: widget.owner.id),
+        'color': Colors.green,
       },
     ];
 
