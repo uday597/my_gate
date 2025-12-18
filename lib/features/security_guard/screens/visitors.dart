@@ -15,6 +15,9 @@ class VisitorsList extends StatefulWidget {
 }
 
 class _VisitorsListState extends State<VisitorsList> {
+  String searchQuery = "";
+  bool showSearchBar = false;
+
   String selectedFilter = "All";
 
   @override
@@ -64,11 +67,15 @@ class _VisitorsListState extends State<VisitorsList> {
       ...visitorProvider.visitorList,
     ];
 
-    /// Apply filter
     List<dynamic> filteredList = combinedList.where((item) {
       final status = item.status.toLowerCase();
       bool statusMatch =
           selectedFilter == "All" || status == selectedFilter.toLowerCase();
+
+      final String name = item is VisitorModal
+          ? item.name.toLowerCase()
+          : (item as GuestRequest).guestName.toLowerCase();
+      bool searchMatch = searchQuery.isEmpty || name.contains(searchQuery);
       DateTime createdAt = item is VisitorModal
           ? item.createdAt
           : (item as GuestRequest).createdAt;
@@ -79,8 +86,10 @@ class _VisitorsListState extends State<VisitorsList> {
             createdAt.month == selectedDate!.month &&
             createdAt.day == selectedDate!.day;
       }
-      return statusMatch && dateMatch;
+      return statusMatch && searchMatch && dateMatch;
     }).toList();
+
+    /// Apply filter
 
     return Scaffold(
       appBar: AppBar(
@@ -99,6 +108,15 @@ class _VisitorsListState extends State<VisitorsList> {
         actions: [
           IconButton(
             onPressed: () {
+              setState(() {
+                showSearchBar = !showSearchBar;
+                searchQuery = "";
+              });
+            },
+            icon: Icon(showSearchBar ? Icons.close : Icons.search),
+          ),
+          IconButton(
+            onPressed: () {
               pickDate();
             },
             icon: Icon(Icons.calendar_month),
@@ -112,11 +130,27 @@ class _VisitorsListState extends State<VisitorsList> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Visitors Coming',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 15),
+            if (showSearchBar)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value.toLowerCase();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Search visitor by name",
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
 
             /// Filter buttons
             SingleChildScrollView(
@@ -183,6 +217,14 @@ class _VisitorsListState extends State<VisitorsList> {
 
   /// VISITOR Details method
   Widget visitorCard(dynamic visitor, String? image, String date) {
+    final DateTime? inTime = visitor is VisitorModal
+        ? visitor.inTime
+        : (visitor as GuestRequest).inTime;
+
+    final DateTime? outTime = visitor is VisitorModal
+        ? visitor.outTime
+        : (visitor as GuestRequest).outTime;
+
     final String name = (visitor is VisitorModal)
         ? visitor.name
         : (visitor as GuestRequest).guestName;
@@ -197,6 +239,18 @@ class _VisitorsListState extends State<VisitorsList> {
     final String flatNo = (visitor is VisitorModal)
         ? visitor.flatNo
         : (visitor as GuestRequest).memberFlatNo.toString();
+    Color statusColor;
+    if (visitor.status == "in") {
+      statusColor = Colors.green;
+    } else if (visitor.status == "out") {
+      statusColor = Colors.grey;
+    } else if (visitor.status == "approved") {
+      statusColor = Colors.green;
+    } else if (visitor.status == "rejected") {
+      statusColor = Colors.red;
+    } else {
+      statusColor = Colors.orange;
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
@@ -282,6 +336,35 @@ class _VisitorsListState extends State<VisitorsList> {
                 ),
 
                 const SizedBox(height: 6),
+                if (inTime != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.login, size: 16, color: Colors.green),
+                      const SizedBox(width: 5),
+                      Text(
+                        "IN: ${DateFormat('hh:mm a').format(inTime)}",
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ],
+
+                if (outTime != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.logout, size: 16, color: Colors.red),
+                      const SizedBox(width: 5),
+                      Text(
+                        "OUT: ${DateFormat('hh:mm a').format(outTime)}",
+                        style: const TextStyle(fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ],
+
+                SizedBox(height: 5),
 
                 /// STATUS BADGE
                 Container(
@@ -290,25 +373,73 @@ class _VisitorsListState extends State<VisitorsList> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: visitor.status == "approved"
-                        ? Colors.green.withOpacity(0.15)
-                        : visitor.status == "rejected"
-                        ? Colors.red.withOpacity(0.15)
-                        : Colors.orange.withOpacity(0.15),
+                    color: statusColor.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     visitor.status.toUpperCase(),
                     style: TextStyle(
-                      color: visitor.status == "approved"
-                          ? Colors.green
-                          : visitor.status == "rejected"
-                          ? Colors.red
-                          : Colors.orange,
+                      color: statusColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
                   ),
+                ),
+
+                /// Buttons for IN / OUT (both Visitor & Guest)
+                Row(
+                  children: [
+                    if ((visitor is VisitorModal &&
+                            visitor.status == "approved") ||
+                        (visitor is GuestRequest &&
+                            visitor.status == "approved"))
+                      ElevatedButton(
+                        onPressed: () {
+                          if (visitor is VisitorModal) {
+                            context.read<VisitorProvider>().updateVisitorStatus(
+                              visitor.id,
+                              "in",
+                            );
+                          } else if (visitor is GuestRequest) {
+                            context.read<RequestProvider>().updateStatus(
+                              id: visitor.id,
+                              status: "in",
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        child: const Text("IN"),
+                      ),
+                    const SizedBox(width: 10),
+
+                    if ((visitor is VisitorModal && visitor.status == "in") ||
+                        (visitor is GuestRequest && visitor.status == "in"))
+                      ElevatedButton(
+                        onPressed: () {
+                          if (visitor is VisitorModal) {
+                            context.read<VisitorProvider>().updateVisitorStatus(
+                              visitor.id,
+                              "out",
+                            );
+                          } else if (visitor is GuestRequest) {
+                            context.read<RequestProvider>().updateStatus(
+                              id: visitor.id,
+                              status: "out",
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        child: const Text("OUT"),
+                      ),
+                  ],
                 ),
               ],
             ),

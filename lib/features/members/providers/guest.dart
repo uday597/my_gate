@@ -111,20 +111,24 @@ class RequestProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateStatus(String status, int id) async {
+  Future<void> updateStatus({required int id, required String status}) async {
     try {
-      await supabase
-          .from("guest_requests")
-          .update({
-            "status": status,
-            "guard_action_at": DateTime.now().toIso8601String(),
-          })
-          .eq("id", id);
+      final Map<String, dynamic> updateData = {
+        "status": status,
+        "guard_action_at": DateTime.now().toIso8601String(),
+      };
 
-      // Refresh the list after update
+      if (status == "in") {
+        updateData["in_time"] = DateTime.now().toIso8601String();
+      }
+
+      if (status == "out") {
+        updateData["out_time"] = DateTime.now().toIso8601String();
+      }
+
+      await supabase.from("guest_requests").update(updateData).eq("id", id);
+
       fetchRequests(_requests.first.societyId);
-
-      notifyListeners();
     } catch (e) {
       debugPrint("Update Status Error: $e");
     }

@@ -53,10 +53,11 @@ class GuestRequestDetailForGuard extends StatelessWidget {
                   infoRow(
                     "Created At",
                     requestData['created_at'] != null
-                        ? DateFormat(
-                            'dd MMM yyyy, hh:mm a',
-                          ).format(DateTime.parse(requestData['created_at']))
-                        : "No date",
+                        ? DateFormat('dd MMM yyyy, hh:mm a').format(
+                            DateTime.tryParse(requestData['created_at']) ??
+                                DateTime.now(),
+                          )
+                        : "N/A",
                   ),
 
                   const SizedBox(height: 25),
@@ -68,8 +69,8 @@ class GuestRequestDetailForGuard extends StatelessWidget {
                           child: ElevatedButton.icon(
                             onPressed: () async {
                               await provider.updateStatus(
-                                "approved",
-                                requestData['id'],
+                                status: "approved",
+                                id: requestData['id'],
                               );
 
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -97,8 +98,8 @@ class GuestRequestDetailForGuard extends StatelessWidget {
                           child: ElevatedButton.icon(
                             onPressed: () async {
                               await provider.updateStatus(
-                                "rejected",
-                                requestData['id'],
+                                status: "rejected",
+                                id: requestData['id'],
                               );
 
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -159,10 +160,11 @@ class GuestRequestDetailForGuard extends StatelessWidget {
     );
   }
 
-  Widget infoRow(String title, String value) {
+  Widget infoRow(String title, dynamic value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "$title: ",
@@ -170,7 +172,7 @@ class GuestRequestDetailForGuard extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              value,
+              value?.toString() ?? "N/A",
               style: const TextStyle(fontSize: 16, color: Colors.black87),
             ),
           ),

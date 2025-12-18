@@ -11,8 +11,10 @@ class VisitorModal {
   final int societyId;
   final int memberId;
   final int guardId;
-  final String? image; // Optional
-  final DateTime createdAt; // NEW
+  final String? image;
+  final DateTime createdAt;
+  final DateTime? inTime;
+  final DateTime? outTime;
 
   VisitorModal({
     required this.id,
@@ -29,6 +31,8 @@ class VisitorModal {
     required this.guardId,
     this.image,
     required this.createdAt,
+    this.inTime,
+    this.outTime,
   });
 
   VisitorModal copyWith({
@@ -45,7 +49,9 @@ class VisitorModal {
     int? memberId,
     int? guardId,
     String? image,
-    DateTime? createdAt, // NEW
+    DateTime? createdAt,
+    DateTime? inTime,
+    DateTime? outTime,
   }) {
     return VisitorModal(
       id: id ?? this.id,
@@ -61,7 +67,9 @@ class VisitorModal {
       memberId: memberId ?? this.memberId,
       guardId: guardId ?? this.guardId,
       image: image ?? this.image,
-      createdAt: createdAt ?? this.createdAt, // NEW
+      createdAt: createdAt ?? this.createdAt,
+      inTime: inTime ?? this.inTime,
+      outTime: outTime ?? this.outTime,
     );
   }
 
@@ -82,7 +90,11 @@ class VisitorModal {
       image: map['image'],
       createdAt: map['created_at'] != null
           ? DateTime.parse(map['created_at'])
-          : DateTime.now(), // Default if null
+          : DateTime.now(),
+
+      inTime: map['in_time'] != null ? DateTime.parse(map['in_time']) : null,
+
+      outTime: map['out_time'] != null ? DateTime.parse(map['out_time']) : null,
     );
   }
 
@@ -100,7 +112,9 @@ class VisitorModal {
       "member_id": memberId,
       "guard_id": guardId,
       "image": image,
-      "created_at": createdAt.toIso8601String(), // NEW
+      "created_at": createdAt.toIso8601String(),
+      "in_time": inTime?.toIso8601String(),
+      "out_time": outTime?.toIso8601String(),
     };
   }
 }

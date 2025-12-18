@@ -26,11 +26,23 @@ class VisitorProvider with ChangeNotifier {
   // Update only visitor status
   Future<bool> updateVisitorStatus(int id, String status) async {
     try {
-      await supabase.from('visitor').update({"status": status}).eq('id', id);
+      final now = DateTime.now();
+
+      final updateData = {
+        "status": status,
+        if (status == "in") "in_time": now.toIso8601String(),
+        if (status == "out") "out_time": now.toIso8601String(),
+      };
+
+      await supabase.from('visitor').update(updateData).eq('id', id);
 
       final index = _visitorList.indexWhere((v) => v.id == id);
       if (index != -1) {
-        _visitorList[index] = _visitorList[index].copyWith(status: status);
+        _visitorList[index] = _visitorList[index].copyWith(
+          status: status,
+          inTime: status == "in" ? now : _visitorList[index].inTime,
+          outTime: status == "out" ? now : _visitorList[index].outTime,
+        );
         notifyListeners();
       }
 

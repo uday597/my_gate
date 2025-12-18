@@ -10,6 +10,8 @@ class GuestRequest {
   final String? memberName;
   final String? memberFlatNo;
   final String? request_type;
+  final DateTime? inTime;
+  final DateTime? outTime;
 
   final DateTime createdAt;
   final DateTime? guardViewedAt;
@@ -18,6 +20,8 @@ class GuestRequest {
 
   GuestRequest({
     required this.id,
+    this.inTime,
+    this.outTime,
     this.memberName,
     this.memberFlatNo,
     required this.societyId,
@@ -42,6 +46,9 @@ class GuestRequest {
       request_type: map['request_type'],
       memberName: map['members']?['member_name'] ?? 'Unknown',
       memberFlatNo: map['members']?['flat_no'] ?? 'no data',
+      inTime: map['in_time'] != null ? DateTime.parse(map['in_time']) : null,
+
+      outTime: map['out_time'] != null ? DateTime.parse(map['out_time']) : null,
 
       guestName: map['guest_name'],
       guestPhone: map['guest_phone'],
@@ -61,6 +68,9 @@ class GuestRequest {
 
   Map<String, dynamic> toMap() {
     return {
+      'in_time': inTime?.toIso8601String(),
+      'out_time': outTime?.toIso8601String(),
+
       'id': id,
       'society_id': societyId,
       'member_id': memberId,

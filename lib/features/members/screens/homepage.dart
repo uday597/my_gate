@@ -7,6 +7,7 @@ import 'package:my_gate_clone/features/members/screens/help_requestscreen.dart';
 import 'package:my_gate_clone/features/members/screens/new_visitors.dart';
 import 'package:my_gate_clone/features/members/screens/notice.dart';
 import 'package:my_gate_clone/features/members/screens/notifications.dart';
+import 'package:my_gate_clone/features/members/screens/payment.dart';
 import 'package:my_gate_clone/features/members/screens/service_providers.dart';
 import 'package:my_gate_clone/features/members/screens/view_requests.dart';
 import 'package:my_gate_clone/features/owner/modal/members_modal.dart';
@@ -277,7 +278,7 @@ class MemberHomepage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AddComplaintScreen(
+                        builder: (context) => MemberPaymentScreen(
                           memberId: member.id,
                           societyId: member.societyId,
                         ),
