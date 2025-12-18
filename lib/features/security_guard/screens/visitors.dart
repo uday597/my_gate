@@ -69,8 +69,17 @@ class _VisitorsListState extends State<VisitorsList> {
 
     List<dynamic> filteredList = combinedList.where((item) {
       final status = item.status.toLowerCase();
-      bool statusMatch =
-          selectedFilter == "All" || status == selectedFilter.toLowerCase();
+
+      // Helper function to check if status matches the selected filter
+      bool statusMatch = selectedFilter == "All";
+
+      if (selectedFilter.toLowerCase() == "approved") {
+        statusMatch = status == "approved" || status == "in" || status == "out";
+      } else if (selectedFilter.toLowerCase() == "pending") {
+        statusMatch = status == "pending";
+      } else if (selectedFilter.toLowerCase() == "rejected") {
+        statusMatch = status == "rejected";
+      }
 
       final String name = item is VisitorModal
           ? item.name.toLowerCase()
@@ -239,19 +248,22 @@ class _VisitorsListState extends State<VisitorsList> {
     final String flatNo = (visitor is VisitorModal)
         ? visitor.flatNo
         : (visitor as GuestRequest).memberFlatNo.toString();
-    Color statusColor;
-    if (visitor.status == "in") {
-      statusColor = Colors.green;
-    } else if (visitor.status == "out") {
-      statusColor = Colors.grey;
-    } else if (visitor.status == "approved") {
-      statusColor = Colors.green;
-    } else if (visitor.status == "rejected") {
-      statusColor = Colors.red;
-    } else {
-      statusColor = Colors.orange;
-    }
+    String approvalStatus = '';
+    Color approvalColor = Colors.grey;
 
+    // First, determine the approval status
+    if (visitor.status == "approved" ||
+        visitor.status == "in" ||
+        visitor.status == "out") {
+      approvalStatus = "Approved";
+      approvalColor = Colors.green;
+    } else if (visitor.status == "rejected") {
+      approvalStatus = "Rejected";
+      approvalColor = Colors.red;
+    } else if (visitor.status == "pending") {
+      approvalStatus = "Pending";
+      approvalColor = Colors.orange;
+    }
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(12),
@@ -366,81 +378,118 @@ class _VisitorsListState extends State<VisitorsList> {
 
                 SizedBox(height: 5),
 
-                /// STATUS BADGE
+                /// APPROVAL STATUS (Always show pending/approved/rejected)
+
+                /// Display approval status badge
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.15),
+                    color: approvalColor.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    visitor.status.toUpperCase(),
+                    approvalStatus.toUpperCase(),
                     style: TextStyle(
-                      color: statusColor,
+                      color: approvalColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
                   ),
                 ),
 
-                /// Buttons for IN / OUT (both Visitor & Guest)
-                Row(
-                  children: [
-                    if ((visitor is VisitorModal &&
-                            visitor.status == "approved") ||
-                        (visitor is GuestRequest &&
-                            visitor.status == "approved"))
-                      ElevatedButton(
-                        onPressed: () {
-                          if (visitor is VisitorModal) {
-                            context.read<VisitorProvider>().updateVisitorStatus(
-                              visitor.id,
-                              "in",
-                            );
-                          } else if (visitor is GuestRequest) {
-                            context.read<RequestProvider>().updateStatus(
-                              id: visitor.id,
-                              status: "in",
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.green,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                        child: const Text("IN"),
-                      ),
-                    const SizedBox(width: 10),
+                /// ENTRY STATUS (if applicable - show separately)
+                if (visitor.status == "in" || visitor.status == "out")
+                  const SizedBox(height: 4),
 
-                    if ((visitor is VisitorModal && visitor.status == "in") ||
-                        (visitor is GuestRequest && visitor.status == "in"))
-                      ElevatedButton(
-                        onPressed: () {
-                          if (visitor is VisitorModal) {
-                            context.read<VisitorProvider>().updateVisitorStatus(
-                              visitor.id,
-                              "out",
-                            );
-                          } else if (visitor is GuestRequest) {
-                            context.read<RequestProvider>().updateStatus(
-                              id: visitor.id,
-                              status: "out",
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                        child: const Text("OUT"),
+                if (visitor.status == "in" || visitor.status == "out")
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color:
+                          (visitor.status == "in" ? Colors.blue : Colors.grey)
+                              .withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      visitor.status == "in" ? "CHECKED IN" : "CHECKED OUT",
+                      style: TextStyle(
+                        color: visitor.status == "in"
+                            ? Colors.blue
+                            : Colors.grey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
-                  ],
-                ),
+                    ),
+                  ),
+
+                const SizedBox(height: 8),
+
+                /// Buttons for IN / OUT (both Visitor & Guest)
+                if ((visitor is VisitorModal && visitor.status == "approved") ||
+                    (visitor is GuestRequest && visitor.status == "approved") ||
+                    (visitor is VisitorModal && visitor.status == "in") ||
+                    (visitor is GuestRequest && visitor.status == "in"))
+                  Row(
+                    children: [
+                      /// IN Button - Show when status is "approved"
+                      if ((visitor is VisitorModal &&
+                              visitor.status == "approved") ||
+                          (visitor is GuestRequest &&
+                              visitor.status == "approved"))
+                        ElevatedButton(
+                          onPressed: () {
+                            if (visitor is VisitorModal) {
+                              context
+                                  .read<VisitorProvider>()
+                                  .updateVisitorStatus(visitor.id, "in");
+                            } else if (visitor is GuestRequest) {
+                              context.read<RequestProvider>().updateStatus(
+                                id: visitor.id,
+                                status: "in",
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.green,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          child: const Text("CHECK IN"),
+                        ),
+                      const SizedBox(width: 10),
+
+                      /// OUT Button - Show when status is "in"
+                      if ((visitor is VisitorModal && visitor.status == "in") ||
+                          (visitor is GuestRequest && visitor.status == "in"))
+                        ElevatedButton(
+                          onPressed: () {
+                            if (visitor is VisitorModal) {
+                              context
+                                  .read<VisitorProvider>()
+                                  .updateVisitorStatus(visitor.id, "out");
+                            } else if (visitor is GuestRequest) {
+                              context.read<RequestProvider>().updateStatus(
+                                id: visitor.id,
+                                status: "out",
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.red,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          child: const Text("CHECK OUT"),
+                        ),
+                    ],
+                  ),
               ],
             ),
           ),
