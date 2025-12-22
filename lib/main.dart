@@ -1,4 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:my_gate_clone/features/admin/provider/society_provider.dart';
 import 'package:my_gate_clone/features/members/providers/complaints.dart';
 import 'package:my_gate_clone/features/members/providers/events.dart';
@@ -16,15 +19,27 @@ import 'package:my_gate_clone/features/owner/provider/security_guard.dart';
 import 'package:my_gate_clone/features/owner/provider/service_provider.dart';
 import 'package:my_gate_clone/features/security_guard/providers/login.dart';
 import 'package:my_gate_clone/features/security_guard/providers/visitor.dart';
+import 'package:my_gate_clone/firebase_options.dart';
+import 'package:my_gate_clone/notifications_service.dart';
 import 'package:my_gate_clone/routing/routing.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  Logger().d("Logger notifications backend setup");
+}
 
 const supabaseUrl = 'https://nnlhbdspkhcyeoeciplg.supabase.co';
 const supabaseKey =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ubGhiZHNwa2hjeWVvZWNpcGxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDQ4ODgsImV4cCI6MjA4MDI4MDg4OH0.zVkm9kUHc-Td7niSafLOfwkS3ayPJU5yAy7JxCsLGHs';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  await NotificationService().init();
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
   runApp(
     MultiProvider(
