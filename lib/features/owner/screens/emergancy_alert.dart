@@ -21,10 +21,12 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<EmergencyAlertsProvider>(
-      context,
-      listen: false,
-    ).getAlerts(widget.socityId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<EmergencyAlertsProvider>(
+        context,
+        listen: false,
+      ).getAlerts(widget.socityId);
+    });
   }
 
   Future pickImage() async {

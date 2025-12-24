@@ -11,6 +11,7 @@ class SocietyModal {
   final String state;
   final String total_towers;
   final String total_flats;
+  final String? fcmToken;
 
   SocietyModal({
     required this.id,
@@ -25,6 +26,7 @@ class SocietyModal {
     required this.state,
     required this.total_flats,
     required this.total_towers,
+    this.fcmToken,
   });
 
   // From Supabase map
@@ -42,6 +44,7 @@ class SocietyModal {
       ownerPhone: data['owner_phone'],
       ownerEmail: data['owner_email'],
       societyAddress: data['society_address'],
+      fcmToken: data['fcm_token'],
     );
   }
 
@@ -58,6 +61,7 @@ class SocietyModal {
       'owner_phone': ownerPhone,
       'owner_email': ownerEmail,
       'society_address': societyAddress,
+      'fcm_token': fcmToken,
     };
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:my_gate_clone/features/members/modal/event_response.dart';
 import 'package:provider/provider.dart';
 import 'package:my_gate_clone/features/members/modal/events.dart';
@@ -176,6 +177,11 @@ class _EventsSectionState extends State<EventsSection> {
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      formatDateTime(event.createdAt),
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     const Text(
                       "Posted an event",
@@ -447,7 +453,7 @@ class _EventsSectionState extends State<EventsSection> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _formatDate(response.createdAt),
+                  formatDateTime(response.createdAt),
                   style: TextStyle(fontSize: 11, color: Colors.grey[600]),
                 ),
               ],
@@ -848,8 +854,8 @@ class _EventsSectionState extends State<EventsSection> {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.hour}:${date.minute} ${date.day}/${date.month}/${date.year}';
+  String formatDateTime(DateTime date) {
+    return DateFormat('hh:mm a • dd MMM yyyy').format(date);
   }
 
   void _showSnackBar(String message) {

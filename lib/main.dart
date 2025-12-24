@@ -27,7 +27,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  Logger().d("Logger notifications backend setup");
+  Logger().f("Logger notifications backend setup");
 }
 
 const supabaseUrl = 'https://nnlhbdspkhcyeoeciplg.supabase.co';

@@ -10,6 +10,7 @@ class SecurityGuardModal {
   final String? societyName;
   final String? profileImage;
   final String? createdAt;
+  final String? fcmToken;
 
   SecurityGuardModal({
     required this.id,
@@ -23,6 +24,7 @@ class SecurityGuardModal {
     required this.address,
     this.profileImage,
     this.createdAt,
+    this.fcmToken,
   });
 
   factory SecurityGuardModal.fromMap(Map<String, dynamic> map) {
@@ -38,6 +40,7 @@ class SecurityGuardModal {
       address: map['address'],
       profileImage: map['profile_image'],
       createdAt: map['created_at'],
+      fcmToken: map['fcm_token'],
     );
   }
 
@@ -52,6 +55,7 @@ class SecurityGuardModal {
       'gender': gender,
       'profile_image': profileImage,
       'created_at': createdAt,
+      'fcm_token': fcmToken,
     };
   }
 }

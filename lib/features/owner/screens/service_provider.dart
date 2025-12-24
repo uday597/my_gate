@@ -17,10 +17,12 @@ class _ProvidersListScreenState extends State<ProvidersListScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ServiceProviders>(
-      context,
-      listen: false,
-    ).fetchServices(widget.societyId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ServiceProviders>(
+        context,
+        listen: false,
+      ).fetchServices(widget.societyId);
+    });
   }
 
   @override
@@ -69,7 +71,9 @@ class _ProvidersListScreenState extends State<ProvidersListScreen> {
               return Container(
                 margin: const EdgeInsets.only(bottom: 14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF373B44), Color(0xFF4286F4)],
+                  ),
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
@@ -85,6 +89,7 @@ class _ProvidersListScreenState extends State<ProvidersListScreen> {
                   title: Text(
                     p.name,
                     style: const TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 17,
                     ),
@@ -98,7 +103,17 @@ class _ProvidersListScreenState extends State<ProvidersListScreen> {
                         backgroundColor: Colors.blue.shade50,
                       ),
                       const SizedBox(height: 4),
-                      Text("📞  ${p.phone}"),
+                      Row(
+                        spacing: 3,
+                        children: [
+                          const Icon(
+                            Icons.phone,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                          Text(p.phone, style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ],
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 18),

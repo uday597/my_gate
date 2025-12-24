@@ -167,11 +167,12 @@ class _AddSecurityGuardState extends State<AddSecurityGuard> {
             ],
           ),
           child: CircleAvatar(
+            backgroundColor: Colors.grey.shade200,
             radius: 65,
             backgroundImage: pickedImage != null
                 ? FileImage(pickedImage!)
-                : const AssetImage("assets/default_avatar.png")
-                      as ImageProvider,
+                : null,
+            child: pickedImage == null ? Icon(Icons.person, size: 65) : null,
           ),
         ),
         const SizedBox(height: 10),

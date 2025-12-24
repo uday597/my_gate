@@ -9,6 +9,7 @@ import 'package:my_gate_clone/features/owner/screens/members_list.dart';
 import 'package:my_gate_clone/features/owner/screens/notice.dart';
 import 'package:my_gate_clone/features/owner/screens/payments.dart';
 import 'package:my_gate_clone/features/owner/screens/service_provider.dart';
+import 'package:my_gate_clone/role_screen.dart';
 import 'package:my_gate_clone/utilis/appbar.dart';
 
 class OwnerHomepage extends StatefulWidget {
@@ -41,54 +42,70 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
         'icon': Icons.group_add,
         'screen': AddMembers(ownerID: widget.owner.id),
         'color': const Color(0xFF667EEA),
+        'navType': navType.push,
       },
       {
         'title': 'Add Security',
         'icon': Icons.security,
         'screen': AddSecurityGuard(societyId: widget.owner.id),
         'color': const Color(0xFF48BB78),
+        'navType': navType.push,
       },
       {
         'title': 'Add Services',
         'icon': Icons.design_services,
         'screen': ProvidersListScreen(societyId: widget.owner.id),
         'color': const Color(0xFFED8936),
+        'navType': navType.push,
       },
       {
         'title': 'View Guards',
         'icon': Icons.shield_outlined,
         'screen': GuardsList(societyId: widget.owner.id),
         'color': const Color(0xFFF56565),
+        'navType': navType.push,
       },
       {
         'title': 'View Members',
         'icon': Icons.group,
         'screen': MembersListScreen(societyId: widget.owner.id),
         'color': const Color(0xFF4299E1),
+        'navType': navType.push,
       },
       {
         'title': 'Notice',
         'icon': Icons.notifications,
         'screen': Notice(socityId: widget.owner.id),
         'color': const Color(0xFF9F7AEA),
+        'navType': navType.push,
       },
       {
         'title': 'Complaints',
         'icon': Icons.edit_document,
         'screen': ComplaintsRequests(socityId: widget.owner.id),
         'color': Colors.teal,
+        'navType': navType.push,
       },
       {
         'title': 'Emergency Alerts',
         'icon': Icons.add_alert,
         'screen': EmergencyAlertsScreen(socityId: widget.owner.id),
         'color': Colors.red,
+        'navType': navType.push,
       },
       {
         'title': 'Payments',
         'icon': Icons.currency_rupee,
         'screen': AdminSidePayment(societyId: widget.owner.id),
         'color': Colors.green,
+        'navType': navType.push,
+      },
+      {
+        'title': 'Logout',
+        'icon': Icons.logout,
+        'screen': RoleScreen(),
+        'color': Colors.grey,
+        'navType': navType.replace,
       },
     ];
 
@@ -219,10 +236,18 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
                   title: item['title'],
                   color: item['color'],
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => item['screen']),
-                    );
+                    final navType navtype = item['navType'];
+                    if (navtype == navType.push) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => item['screen']),
+                      );
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => item['screen']),
+                      );
+                    }
                   },
                 );
               },
@@ -296,35 +321,37 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
       builder: (_) {
         return Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 60,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade400,
-                  borderRadius: BorderRadius.circular(10),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 60,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade400,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              const Icon(Icons.person, size: 70, color: Colors.blueAccent),
-              const SizedBox(height: 12),
+                const SizedBox(height: 16),
+                const Icon(Icons.person, size: 70, color: Colors.blueAccent),
+                const SizedBox(height: 12),
 
-              Text(
-                widget.owner.ownerName,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+                Text(
+                  widget.owner.ownerName,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 20),
-              infoTile("Society", widget.owner.societyName),
-              infoTile("Phone", widget.owner.ownerPhone),
-              infoTile("Email", widget.owner.ownerEmail),
-              infoTile("Address", widget.owner.societyAddress),
-            ],
+                const SizedBox(height: 20),
+                infoTile("Society", widget.owner.societyName),
+                infoTile("Phone", widget.owner.ownerPhone),
+                infoTile("Email", widget.owner.ownerEmail),
+                infoTile("Address", widget.owner.societyAddress),
+              ],
+            ),
           ),
         );
       },
@@ -357,3 +384,5 @@ class _OwnerHomepageState extends State<OwnerHomepage> {
     );
   }
 }
+
+enum navType { push, replace }

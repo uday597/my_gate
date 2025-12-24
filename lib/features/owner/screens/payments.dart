@@ -36,6 +36,7 @@ class _AdminSidePaymentState extends State<AdminSidePayment> {
                 final payment = provider.payments[index];
 
                 return Card(
+                  color: Colors.white,
                   elevation: 3,
                   margin: const EdgeInsets.only(bottom: 12),
                   shape: RoundedRectangleBorder(

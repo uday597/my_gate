@@ -29,10 +29,7 @@ PreferredSizeWidget reuseAppBar({
     flexibleSpace: Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color(0xFF373B44), // dark indigo
-            Color(0xFF4286F4),
-          ],
+          colors: [Color(0xFF373B44), Color(0xFF4286F4)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

@@ -8,16 +8,12 @@ class MembersModal {
   final String? memberImage;
   final String memberFlatNo;
   final String tower;
-
   final String totalVehicle;
-
   final String vehicleNo;
   final String dob;
-
   final String gender;
-
   final String idProof;
-
+  final String? fcmToken;
   MembersModal({
     required this.id,
     required this.societyId,
@@ -33,6 +29,7 @@ class MembersModal {
     required this.idProof,
     required this.memberName,
     required this.memberPhone,
+    this.fcmToken,
   });
   factory MembersModal.fromMap(Map<String, dynamic> data) {
     return MembersModal(
@@ -50,6 +47,7 @@ class MembersModal {
       gender: data['gender'],
       idProof: data['id_proof'],
       tower: data['tower'],
+      fcmToken: data['fcm_token'],
     );
   }
 
@@ -68,6 +66,7 @@ class MembersModal {
       'vehicle_no': vehicleNo,
       'gender': gender,
       'id_proof': idProof,
+      'fcm_token': fcmToken,
     };
   }
 }

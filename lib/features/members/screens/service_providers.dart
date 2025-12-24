@@ -22,10 +22,12 @@ class _MemberServiceProvidersScreenState
   @override
   void initState() {
     super.initState();
-    Provider.of<ServiceProviders>(
-      context,
-      listen: false,
-    ).fetchServices(widget.societyId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ServiceProviders>(
+        context,
+        listen: false,
+      ).fetchServices(widget.societyId);
+    });
   }
 
   @override
@@ -255,13 +257,7 @@ class _MemberServiceProvidersScreenState
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Icon(
-            icon,
-            color: // dark indigo
-            Color(
-              0xFF4286F4,
-            ),
-          ),
+          Icon(icon, color: Color(0xFF4286F4)),
           const SizedBox(width: 10),
           Text("$title: ", style: const TextStyle(fontWeight: FontWeight.bold)),
           Expanded(child: Text(value)),

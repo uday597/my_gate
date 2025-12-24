@@ -28,7 +28,8 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
   String? selectedGender;
 
   File? pickedImageFile;
-  bool isLoading = false;
+  bool isUpdating = false;
+  bool isDeleting = false;
 
   @override
   void initState() {
@@ -56,7 +57,7 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
   Future updateGuard() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => isLoading = true);
+    setState(() => isUpdating = true);
 
     final provider = Provider.of<SecurityGuardProvider>(context, listen: false);
 
@@ -81,7 +82,7 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
 
     final success = await provider.updateGuard(updatedGuard);
 
-    setState(() => isLoading = false);
+    setState(() => isUpdating = false);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -92,6 +93,53 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Update Failed")));
+    }
+  }
+
+  Future<void> deleteGuard() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Guard"),
+        content: const Text(
+          "Are you sure you want to delete this security guard? This action cannot be undone.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Delete"),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    setState(() => isDeleting = true);
+
+    final provider = Provider.of<SecurityGuardProvider>(context, listen: false);
+
+    final success = await provider.deleteGuard(widget.guard.id);
+
+    setState(() => isDeleting = false);
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Guard deleted successfully")),
+      );
+      Navigator.pop(context); // go back after delete
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Failed to delete guard")));
     }
   }
 
@@ -208,19 +256,45 @@ class _EditSecurityGuardScreenState extends State<EditSecurityGuardScreen> {
               const SizedBox(height: 25),
 
               // UPDATE BUTTON
-              SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.lightBlue,
-                    foregroundColor: Colors.white,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    height: 45,
+
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue,
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: isUpdating ? null : updateGuard,
+                      child: isUpdating
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              "Update",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                    ),
                   ),
-                  onPressed: isLoading ? null : updateGuard,
-                  child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Update", style: TextStyle(fontSize: 18)),
-                ),
+                  SizedBox(height: 10),
+
+                  SizedBox(
+                    height: 45,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: isDeleting ? null : deleteGuard,
+                      child: isDeleting
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              "Delete",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
